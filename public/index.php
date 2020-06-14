@@ -1,8 +1,9 @@
-<style>
-.spoiler { background: #000; color: #000; }
-.spoiler:hover { color: #fff; }
-</style>
+<?php
 
-<h2>Coming soon!</h2>
+if (isset($_GET['showheaders'])) {
+	echo '<pre>';
+	foreach ($_SERVER as $name => $value) echo "$name: $value\n";
+	echo '</pre>';
+}
 
-<p><span class="spoiler">benis</span></p>
+require __DIR__ . '/coming-soon.php';
