@@ -5,4 +5,4 @@
 
 <h2>Coming soon!</h2>
 
-<p><span class="spoiler">benis</span></p>
+<p><span class="spoiler"> benis <?php echo date('g:i:s'); ?> </span></p>

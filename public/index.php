@@ -18,6 +18,7 @@ if ($route === '/debug-' . $config['debug_password']) {
 	echo '</pre>';
 
 } else if ($route === '/') {
+	header('Cache-Control: no-store');
 	require dirname(__DIR__) . '/pages/coming-soon.php';
 
 } else {
