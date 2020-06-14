@@ -1,6 +1,6 @@
 <style>
 .spoiler { background: #000; color: #000; }
-.spoiler:hover { background: #fff; }
+.spoiler:hover { color: #fff; }
 </style>
 
 <h2>Coming soon!</h2>
