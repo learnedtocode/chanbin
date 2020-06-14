@@ -2,6 +2,20 @@
 
 require dirname(__DIR__) . '/config.php';
 
+$db = @new mysqli(
+	$config['db']['host'],
+	$config['db']['user'],
+	$config['db']['password'],
+	$config['db']['database']
+);
+if ($db && !$db->connect_errno) {
+	$db->set_charset('utf8');
+} else {
+	error_log('MySQL connection failed: ' . $db->connect_error);
+	header('HTTP/1.1 500 Internal Server Error');
+	die('<h2>A server error occurred</h2>');
+}
+
 $route = strtok($_SERVER['REQUEST_URI'], '?');
 
 $route_c = '/' . trim($route, '/');
