@@ -128,7 +128,7 @@ strong {
 }
 #page-text {
   padding: 1em;
-  max-width: 600px;
+  font-size: 15px;
 }
 #page-text h2 {
   margin-bottom: 15px;

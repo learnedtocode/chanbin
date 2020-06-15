@@ -77,6 +77,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			elTitle.value = saved.title;
 			elPaste.value = saved.paste;
 			elPaste.selectionStart = elPaste.selectionEnd = 0;
+			resize();
+			scroll();
+			followCursor();
 		}
 	}
 });
