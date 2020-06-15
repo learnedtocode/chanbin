@@ -32,10 +32,12 @@ if ($route_c !== $route) {
 	redirect($route_c . $qs);
 }
 
+$ip_hash_full = run_hooks('ip_hash_full');
+$ip_hash_display = run_hooks('ip_hash_to_display', $ip_hash_full);
+
 if ($route === '/debug-' . $config['secrets']['debug']) {
-	echo '<pre>';
-	foreach ($_SERVER as $name => $value) echo "$name: $value\n";
-	echo '</pre>';
+	header('Cache-Control: no-store');
+	require dirname(__DIR__) . '/pages/debug.php';
 
 } else if ($route === '/') {
 	header('Cache-Control: no-store');
@@ -44,6 +46,10 @@ if ($route === '/debug-' . $config['secrets']['debug']) {
 } else if ($route === '/about') {
 	header('Cache-Control: max-age=3600');
 	require dirname(__DIR__) . '/pages/about.php';
+
+} else if ($route === '/send' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+	header('Cache-Control: no-store');
+	require dirname(__DIR__) . '/pages/send.php';
 
 } else {
 	fail(404, 'Page not found');

@@ -51,8 +51,10 @@ document.addEventListener('DOMContentLoaded', function() {
 				e.preventDefault();
 				return;
 			}
-			e.preventDefault();
-			alert('This is just a preview, not ready for use yet');
+			if (document.location.hash !== '#go') {
+				alert('This is just a preview, not ready for use yet');
+				e.preventDefault();
+			}
 		});
 
 		var saved = cget('controls');

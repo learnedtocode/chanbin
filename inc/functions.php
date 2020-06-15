@@ -19,6 +19,7 @@ function page_header($title, $is_new_paste = false) {
 
 	$nav_links = [
 		'new paste' => '/',
+		'recent' => '/recent',
 		'about' => '/about',
 	];
 	$nav_menu = '';
@@ -52,6 +53,7 @@ function page_header($title, $is_new_paste = false) {
 					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
 					<input type="text" id="password" name="password" maxlength="99" placeholder="Tripcode">
 					<input type="submit" id="send" value="SEND">
+					<input type="hidden" name="csrf" value="<?php echo run_hooks('csrf_token'); ?>">
 				</div>
 				<div id="top-menu"><?php echo $nav_menu; ?></div>
 			</div>
@@ -79,7 +81,7 @@ function page_footer() {
 <?php
 }
 
-function fail($code, $message) {
+function fail($code, $message, $text = false) {
 	switch ($code) {
 		case 400:
 			header('HTTP/1.1 400 Bad Request');
@@ -91,6 +93,9 @@ function fail($code, $message) {
 	page_header($message);
 	echo '<div id="page-text">';
 	echo '<h2 class="error">' . htmlentities($message) . '</h2>';
+	if ($text) {
+		echo '<p>Click your browser\'s Back button and try again.</p>';
+	}
 	echo '</div>';
 	page_footer();
 	run_hooks('req_end', $code, $message);
