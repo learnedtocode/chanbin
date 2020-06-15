@@ -1,10 +1,10 @@
 <?php
 
-$page_is_new_paste = false;
+$page_paste_form = false;
 
-function page_header($title, $is_new_paste = false) {
-	global $route, $page_is_new_paste;
-	$page_is_new_paste = $is_new_paste;
+function page_header($title, $paste_form = false, $clone_paste_id = null) {
+	global $route, $page_paste_form;
+	$page_paste_form = $paste_form;
 
 	$app_css_filename = trim(file_get_contents(
 		dirname(__DIR__) . '/zzz/app-css-filename.txt')
@@ -31,6 +31,13 @@ function page_header($title, $is_new_paste = false) {
 		$nav_menu .= '<a href="' . $href . '">' . $text . '</a>';
 	}
 
+	$paste_status = 'new paste:';
+	if ($clone_paste_id) {
+		$paste_status =
+			'clone of <a href="/paste/' . htmlspecialchars($clone_paste_id)
+			. '">' . htmlspecialchars($clone_paste_id) . '</a>:';
+	}
+
 ?>
 <!doctype html>
 <html>
@@ -41,19 +48,20 @@ function page_header($title, $is_new_paste = false) {
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script src="/assets/<?php echo $app_js_filename; ?>"></script>
 	</head>
-<?php if ($is_new_paste) { ?>
+<?php if ($paste_form) { ?>
 	<body>
 		<form method="post" action="/send">
 			<div id="header">
 				<?php run_hooks('logo'); ?>
 				<div id="logotext"><?php echo run_hooks('logotext', 'chanbin'); ?></div>
 				<div id="controls">
-					<span id="description">new paste:</span>
+					<span id="description"><?php echo $paste_status; ?></span>
 					<input type="text" id="title" name="title" minlength="3" maxlength="18" placeholder="Title">
 					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
 					<input type="password" id="password" name="password" maxlength="99" placeholder="Password">
 					<input type="submit" id="send" value="SEND">
-					<input type="hidden" name="csrf" value="<?php echo run_hooks('csrf_token'); ?>">
+					<input type="hidden" name="clone_from" value="<?php echo $clone_paste_id ? htmlspecialchars($clone_paste_id) : '' ?>">
+					<input type="hidden" name="csrf" value="<?php echo htmlspecialchars(run_hooks('csrf_token')); ?>">
 				</div>
 				<div id="top-menu"><?php echo $nav_menu; ?></div>
 			</div>
@@ -70,10 +78,10 @@ function page_header($title, $is_new_paste = false) {
 }
 
 function page_footer() {
-	global $page_is_new_paste;
+	global $page_paste_form;
 ?>
 			</div>
-<?php if ($page_is_new_paste) { ?>
+<?php if ($page_paste_form) { ?>
 		</form>
 <?php } ?>
 	</body>

@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			document.getElementById('password').value = saved.password;
 		}
 		saved = lget('savedPaste');
-		if (saved) {
+		if (saved && document.location.pathname === '/') { // new paste
 			elTitle.value = saved.title;
 			elPaste.value = saved.paste;
 			elPaste.selectionStart = elPaste.selectionEnd = 0;

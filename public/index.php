@@ -35,6 +35,8 @@ if ($route_c !== $route) {
 $ip_hash_full = run_hooks('ip_hash_full');
 $ip_hash_display = run_hooks('ip_hash_to_display', $ip_hash_full);
 
+$route_params = [];
+
 if ($route === '/debug-' . $config['secrets']['debug']) {
 	header('Cache-Control: no-store');
 	require dirname(__DIR__) . '/pages/debug.php';
