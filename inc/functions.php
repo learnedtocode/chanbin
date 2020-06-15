@@ -1,6 +1,11 @@
 <?php
 
-function page_header($title) {
+$page_is_new_paste = false;
+
+function page_header($title, $is_new_paste = false) {
+	global $route, $page_is_new_paste;
+	$page_is_new_paste = $is_new_paste;
+
 	$app_css_filename = trim(file_get_contents(
 		dirname(__DIR__) . '/zzz/app-css-filename.txt')
 	);
@@ -11,6 +16,20 @@ function page_header($title) {
 		htmlspecialchars($title)
 		. ' - '
 		. htmlspecialchars(run_hooks('site_name', 'chanbin'));
+
+	$nav_links = [
+		'new paste' => '/',
+		'about' => '/about',
+	];
+	$nav_menu = '';
+	foreach ($nav_links as $text => $href) {
+		if ($route === $href) {
+			continue;
+		}
+		if ($nav_menu) $nav_menu .= ' | ';
+		$nav_menu .= '<a href="' . $href . '">' . $text . '</a>';
+	}
+
 ?>
 <!doctype html>
 <html>
@@ -21,17 +40,38 @@ function page_header($title) {
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script src="/assets/<?php echo $app_js_filename; ?>"></script>
 	</head>
+<?php if ($is_new_paste) { ?>
+	<body>
+		<form method="post" action="/new">
+			<div id="header">
+				<?php run_hooks('logo'); ?>
+				<div id="logotext"><?php echo run_hooks('logotext', 'chanbin'); ?></div>
+				<div id="controls">
+					<span id="description">new paste:</span>
+					<input type="text" id="title" name="title" minlength="3" maxlength="18" placeholder="Title">
+					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
+					<input type="text" id="password" name="password" maxlength="99" placeholder="Tripcode">
+					<input type="submit" id="send" value="SEND">
+				</div>
+				<div id="top-menu"><?php echo $nav_menu; ?></div>
+			</div>
+			<div id="content">
+<?php } else { ?>
 	<body>
 		<div id="header">
 			<?php run_hooks('logo'); ?>
 			<div id="logotext"><?php echo run_hooks('logotext', 'chanbin'); ?></div>
+			<div id="top-menu"><?php echo $nav_menu; ?></div>
 		</div>
 		<div id="content">
-<?php
+<?php }
 }
 
 function page_footer() {
-?>
+	global $page_is_new_paste;
+	if ($page_is_new_paste) { ?>
+			</form>
+	<?php } ?>
 		</div>
 	</body>
 </html><!-- <?php echo date('Y-m-d g:i:s'); ?> -->
@@ -48,7 +88,9 @@ function fail($code, $message) {
 			break;
 	}
 	page_header($message);
-	echo '<h2>' . htmlentities($message) . '</h2>';
+	echo '<div id="page-text">';
+	echo '<h2 class="error">' . htmlentities($message) . '</h2>';
+	echo '</div>';
 	page_footer();
 	run_hooks('req_end', $code, $message);
 	die();
@@ -61,7 +103,9 @@ function redirect($location, $code = 302) {
 			break;
 	}
 	page_header('Location: ' . $location);
-	echo '<h2>You are being redirected</h2>';
+	echo '<div id="page-text">';
+	echo '<h2 class="error">You are being redirected</h2>';
+	echo '</div>';
 	page_footer();
 	run_hooks('req_end', $code, $location);
 	die();

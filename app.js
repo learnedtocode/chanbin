@@ -6,11 +6,17 @@ var pastePaddingTop = 3; // see css
 var linesMarginLeft = 0;
 var elLines = null;
 var elPaste = null;
+var elSend = null;
 
 document.addEventListener('DOMContentLoaded', function() {
 	document.body.className = 'js';
 	elLines = document.getElementById('lines');
 	elPaste = document.getElementById('paste');
+	elSend = document.getElementById('send');
+
+	if (!elPaste) {
+		return;
+	}
 
 	calcCharWidth();
 	resize();
@@ -28,6 +34,33 @@ document.addEventListener('DOMContentLoaded', function() {
 	elPaste.addEventListener('keyup', f);
 	elPaste.addEventListener('click', f);
 	elPaste.addEventListener('focus', f);
+
+	if (elSend) {
+		elSend.addEventListener('click', function(e) {
+			cset('controls', {
+				username: document.getElementById('username').value,
+				password: document.getElementById('password').value,
+			});
+			if (document.getElementById('title').value.length < 3) {
+				alert('Paste title is required');
+				e.preventDefault();
+				return;
+			}
+			if (document.getElementById('paste').value.length < 3) {
+				alert('Paste content is required');
+				e.preventDefault();
+				return;
+			}
+			e.preventDefault();
+			alert('This is just a preview, not ready for use yet');
+		});
+
+		var saved = cget('controls');
+		if (saved) {
+			document.getElementById('username').value = saved.username;
+			document.getElementById('password').value = saved.password;
+		}
+	}
 });
 
 function followCursor() {
@@ -123,4 +156,23 @@ function resize() {
 function scroll() {
 	var scrollY = ('scrollY' in window ? window.scrollY : document.documentElement.scrollTop);
 	elLines.style.marginTop = (-scrollY) + 'px';
+}
+
+function cset(name, value, expires) {
+	if (!expires) {
+		expires = new Date();
+		expires.setTime(expires.getTime() + 365*24*60*60*1000);
+	}
+	document.cookie = name + '=' + encodeURIComponent(JSON.stringify(value))
+		+ '; expires=' + expires.toUTCString() + '; path=/';
+}
+
+function cget(name) {
+	var cs = document.cookie.split('; ');
+	for (var i = 0; i < cs.length; i++) {
+		if (cs[i].substring(0, name.length + 1) === name + '=') {
+			return JSON.parse(decodeURIComponent(cs[i].substring(name.length + 1)));
+		}
+	}
+	return null;
 }

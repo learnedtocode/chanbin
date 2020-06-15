@@ -32,7 +32,7 @@ if ($route_c !== $route) {
 	redirect($route_c . $qs);
 }
 
-if ($route === '/debug-' . $config['debug_password']) {
+if ($route === '/debug-' . $config['secrets']['debug']) {
 	echo '<pre>';
 	foreach ($_SERVER as $name => $value) echo "$name: $value\n";
 	echo '</pre>';
@@ -40,6 +40,10 @@ if ($route === '/debug-' . $config['debug_password']) {
 } else if ($route === '/') {
 	header('Cache-Control: no-store');
 	require dirname(__DIR__) . '/pages/new-paste.php';
+
+} else if ($route === '/about') {
+	header('Cache-Control: max-age=3600');
+	require dirname(__DIR__) . '/pages/about.php';
 
 } else {
 	fail(404, 'Page not found');

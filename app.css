@@ -58,6 +58,17 @@ body {
 	font-family: arial, helvetica, sans-serif;
 	font-size: 13px;
 }
+a {
+  color: #30a;
+  text-decoration: none;
+}
+a:hover, a:focus {
+  color: #30f;
+  text-decoration: underline;
+}
+strong {
+  font-weight: bold;
+}
 
 #header {
 	position: fixed;
@@ -75,14 +86,59 @@ body {
 	width: 33px;
 	height: 33px;
 }
-#logotext {
-	height: 24px;
-	line-height: 24px;
-	align-self: flex-end;
+
+#controls {
+  padding-left: 1.5em;
+}
+#controls #description {
+  color: #456;
+  font-size: 12px;
+}
+#controls input {
+  font-size: 13px;
+}
+#controls input[type=text] {
+  border: 1px solid #b7c5d9;
+}
+#controls #title {
+  width: 72px;
+}
+#controls #username {
+  width: 75px;
+  background: #dfd;
+}
+#controls #password {
+  width: 78px;
+  background: #fdd;
+}
+#controls #send {
+  width: 60px;
+  padding: 0;
+}
+
+#top-menu {
+  flex: 1;
+  text-align: right;
+  padding-right: 0.6em;
 }
 
 #content {
-	margin-top: 36px;
+  margin-top: 36px;
+}
+#page-text {
+  padding: 1em;
+  max-width: 600px;
+}
+#page-text h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: bold;
+}
+#page-text p {
+  margin-bottom: 12px;
+}
+.error, .warning {
+  color: #900;
 }
 
 #lines, #paste, #calc {
