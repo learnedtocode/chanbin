@@ -103,7 +103,7 @@ function resize() {
 
 	if (linesShown != pasteLines.length) {
 		var linesText = '';
-		var numChars = String(pasteLines.length).length;
+		var numChars = Math.max(3, String(pasteLines.length).length);
 		for (i = 1; i <= pasteLines.length; i++) {
 			linesText += i;
 			if (i < pasteLines.length) linesText += '\n';
