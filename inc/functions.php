@@ -60,7 +60,7 @@ function page_header($title, $paste_form = false, $clone_paste_id = null) {
 					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
 					<input type="password" id="password" name="password" maxlength="99" placeholder="Password">
 					<input type="submit" id="send" value="SEND">
-					<input type="hidden" name="clone_from" value="<?php echo $clone_paste_id ? htmlspecialchars($clone_paste_id) : '' ?>">
+					<input type="hidden" name="cloned_from" value="<?php echo $clone_paste_id ? htmlspecialchars($clone_paste_id) : '' ?>">
 					<input type="hidden" name="csrf" value="<?php echo htmlspecialchars(run_hooks('csrf_token')); ?>">
 				</div>
 				<div id="top-menu"><?php echo $nav_menu; ?></div>
@@ -89,7 +89,7 @@ function page_footer() {
 <?php
 }
 
-function fail($code, $message, $text = false) {
+function fail($code, $message, $retry_text = false, $extra_html = null) {
 	switch ($code) {
 		case 400:
 			header('HTTP/1.1 400 Bad Request');
@@ -101,8 +101,11 @@ function fail($code, $message, $text = false) {
 	page_header($message);
 	echo '<div id="page-text">';
 	echo '<h2 class="error">' . htmlentities($message) . '</h2>';
-	if ($text) {
-		echo '<p>Click your browser\'s Back button and try again.</p>';
+	if ($extra_html) {
+		echo $extra_html;
+	}
+	if ($retry_text) {
+		echo "\n<p>Click your browser's Back button and try again.</p>\n";
 	}
 	echo '</div>';
 	page_footer();
@@ -116,7 +119,7 @@ function redirect($location, $code = 302) {
 			header('HTTP/1.1 302 Found');
 			break;
 	}
-	page_header('Location: ' . $location);
+	header('Location: ' . $location);
 	echo '<div id="page-text">';
 	echo '<h2 class="error">You are being redirected</h2>';
 	echo '</div>';
@@ -140,4 +143,8 @@ function run_hooks($name, ...$args) {
 		$value = call_user_func_array($fn, $args);
 	}
 	return $value;
+}
+
+function clean_ascii($str) {
+	return trim(preg_replace('/[^\x20-\x7E]/','', $str));
 }

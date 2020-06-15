@@ -5,7 +5,7 @@ create table pastes (
 	ip_hash char(12) character set ascii not null,
 	timestamp int(11) unsigned not null,
 	title varchar(18) character set ascii default null,
-	content binary not null,
+	content text not null,
 	deleted tinyint(1) unsigned not null default 0,
 	is_mod_action tinyint(1) unsigned not null default 0,
 	flags tinyint(1) unsigned not null default 0,

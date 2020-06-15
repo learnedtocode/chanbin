@@ -49,6 +49,11 @@ if ($route === '/debug-' . $config['secrets']['debug']) {
 	header('Cache-Control: max-age=3600');
 	require dirname(__DIR__) . '/pages/about.php';
 
+} else if (preg_match('@^/paste/([a-zA-Z0-9]{9})$@', $route, $matches)) {
+	header('Cache-Control: max-age=60');
+    $route_params['paste_id'] = $matches[1];
+    require dirname(__DIR__) . '/pages/existing-paste.php';
+
 } else if ($route === '/send' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 	header('Cache-Control: no-store');
 	require dirname(__DIR__) . '/pages/send.php';
@@ -56,3 +61,5 @@ if ($route === '/debug-' . $config['secrets']['debug']) {
 } else {
 	fail(404, 'Page not found');
 }
+
+run_hooks('req_end', 200);
