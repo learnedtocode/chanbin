@@ -37,10 +37,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	if (elSend) {
 		elSend.addEventListener('click', function(e) {
-			cset('controls', {
-				username: document.getElementById('username').value,
-				password: document.getElementById('password').value,
-			});
+			try {
+				localStorage.setItem('login', {
+					username: document.getElementById('username').value,
+					password: document.getElementById('password').value,
+				});
+				localStorage.setItem('savedPaste', {
+					title: document.getElementById('title').value,
+					paste: paste.value,
+				});
+			} catch {}
+
 			if (document.getElementById('title').value.length < 3) {
 				alert('Paste title is required');
 				e.preventDefault();
@@ -57,11 +64,19 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		});
 
-		var saved = cget('controls');
-		if (saved) {
-			document.getElementById('username').value = saved.username;
-			document.getElementById('password').value = saved.password;
-		}
+		try {
+			var saved = localStorage.getItem('login');
+			if (saved) {
+				document.getElementById('username').value = saved.username;
+				document.getElementById('password').value = saved.password;
+			}
+			saved = localStorage.getItem('savedPaste');
+			if (saved) {
+				document.getElementById('title').value = saved.title;
+				paste.value = saved.paste;
+				paste.selectionStart = paste.selectionEnd = 0;
+			}
+		} catch {}
 	}
 });
 
@@ -158,23 +173,4 @@ function resize() {
 function scroll() {
 	var scrollY = ('scrollY' in window ? window.scrollY : document.documentElement.scrollTop);
 	elLines.style.marginTop = (-scrollY) + 'px';
-}
-
-function cset(name, value, expires) {
-	if (!expires) {
-		expires = new Date();
-		expires.setTime(expires.getTime() + 365*24*60*60*1000);
-	}
-	document.cookie = name + '=' + encodeURIComponent(JSON.stringify(value))
-		+ '; expires=' + expires.toUTCString() + '; path=/';
-}
-
-function cget(name) {
-	var cs = document.cookie.split('; ');
-	for (var i = 0; i < cs.length; i++) {
-		if (cs[i].substring(0, name.length + 1) === name + '=') {
-			return JSON.parse(decodeURIComponent(cs[i].substring(name.length + 1)));
-		}
-	}
-	return null;
 }
