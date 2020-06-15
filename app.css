@@ -117,6 +117,7 @@ body.js #lines {
 	width: 100%;
 	min-height: 300px;
 	resize: none;
+	outline: none;
 }
 body.js #paste {
 	overflow: hidden;
