@@ -89,8 +89,11 @@ strong {
 
 #controls {
   padding-left: 1.5em;
+  flex-shrink: 1;
+  white-space: nowrap;
+  overflow: hidden;
 }
-#controls #description {
+#controls #meta {
   color: #456;
   font-size: 12px;
 }
@@ -117,10 +120,44 @@ strong {
   padding: 0;
 }
 
+#controls .title {
+  font-weight: bold;
+  margin-right: 0.9em;
+}
+#controls .anon {
+  font-style: italic;
+}
+#controls .trip-link {
+  color: #093;
+}
+#controls .trip,
+#controls .count {
+  margin-left: 0.15em;
+}
+#controls .date,
+#controls .uid-link,
+#controls .actions {
+  margin-left: 0.45em;
+}
+#controls .uid-link {
+  border-radius: 3px;
+  padding: 1px 2px;
+}
+#controls .uid-link.dark {
+  color: #fff;
+}
+#controls .uid-link.light {
+  color: #000;
+}
+
 #top-menu {
   flex: 1;
   text-align: right;
+  padding-left: 0.9em;
   padding-right: 0.6em;
+  min-width: 36px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 #content {

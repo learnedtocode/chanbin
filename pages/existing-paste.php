@@ -15,7 +15,18 @@ if (!$q_paste->num_rows) {
 }
 $paste = $q_paste->fetch_assoc();
 
-page_header('Paste: ' . $paste['title']);
+if ($route_params['format'] === 'raw' || $route_params['format'] === 'download') {
+	header('Content-Type: text/plain');
+	if ($route_params['format'] === 'download') {
+		$filename = preg_replace('@[^a-zA-Z0-9_]+@', '-', $paste['title'])
+			. '_' . $paste['id'] . '.txt';
+		header('Content-Disposition: attachment; filename="' . $filename . '"');
+	}
+	die($paste['content']);
+}
+
+$paste['uid'] = run_hooks('ip_hash_to_display', $paste['ip_hash']);
+page_header('Paste: ' . $paste['title'], ['paste' => $paste]);
 
 echo '<div id="lines"></div>';
 echo '<textarea id="paste" name="paste" maxlength="90000" readonly>';

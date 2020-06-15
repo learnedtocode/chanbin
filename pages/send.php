@@ -24,16 +24,16 @@ if (!count($errors) && $paste['cloned_from']) {
 	if (!preg_match('@^[a-zA-Z0-9]{9}$@', $paste['cloned_from'])) {
 		$errors[] = 'Invalid clone ID';
 	} else {
-		$q_limit = $db->prepare("
+		$q_clone = $db->prepare("
 			select id
 			from pastes
 			where id = ?
 			and deleted = 0
 		");
-		$q_limit->bind_param('s', $paste['cloned_from']);
-		$q_limit->execute();
-		$q_limit = $q_limit->get_result();
-		if (!$q_limit->num_rows) {
+		$q_clone->bind_param('s', $paste['cloned_from']);
+		$q_clone->execute();
+		$q_clone = $q_clone->get_result();
+		if (!$q_clone->num_rows) {
 			$errors[] = 'Invalid clone ID';
 		}
 	}
@@ -112,4 +112,4 @@ if (!$q_newpaste->execute()) {
 	fail(500, $q_newpaste->error, true);
 }
 
-redirect('/paste/' . $paste['id'] . '#success');
+redirect('/paste/' . $paste['id']);

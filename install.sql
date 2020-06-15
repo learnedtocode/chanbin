@@ -1,7 +1,7 @@
 create table pastes (
 	id char(9) character set ascii not null,
 	username varchar(18) character set ascii default null,
-	trip varchar(18) character set ascii default null,
+	trip varchar(12) character set ascii default null,
 	ip_hash char(12) character set ascii not null,
 	timestamp int(11) unsigned not null,
 	title varchar(18) character set ascii default null,

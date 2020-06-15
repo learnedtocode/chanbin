@@ -2,7 +2,11 @@
 
 $page_paste_form = false;
 
-function page_header($title, $paste_form = false, $clone_paste_id = null) {
+function page_header($title, $options = []) {
+	$paste_form = $options['paste_form'] ?? false;
+	$clone_paste_id = $options['clone_paste_id'] ?? null;
+	$paste = $options['paste'] ?? null;
+
 	global $route, $page_paste_form;
 	$page_paste_form = $paste_form;
 
@@ -55,7 +59,7 @@ function page_header($title, $paste_form = false, $clone_paste_id = null) {
 				<?php run_hooks('logo'); ?>
 				<div id="logotext"><?php echo run_hooks('logotext', 'chanbin'); ?></div>
 				<div id="controls">
-					<span id="description"><?php echo $paste_status; ?></span>
+					<span id="meta"><?php echo $paste_status; ?></span>
 					<input type="text" id="title" name="title" minlength="3" maxlength="18" placeholder="Title">
 					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
 					<input type="password" id="password" name="password" maxlength="99" placeholder="Password">
@@ -71,6 +75,61 @@ function page_header($title, $paste_form = false, $clone_paste_id = null) {
 		<div id="header">
 			<?php run_hooks('logo'); ?>
 			<div id="logotext"><?php echo run_hooks('logotext', 'chanbin'); ?></div>
+			<?php if ($paste) {
+				echo '<div id="controls">';
+				echo '<span class="title">';
+				echo htmlspecialchars($paste['title']);
+				echo '</span>';
+				echo '<span id="meta">';
+				if ($paste['username']) {
+					echo '<span class="user">';
+					echo htmlspecialchars($paste['username']);
+					echo '</span>';
+				} else {
+					echo '<span class="anon">Anon</span>';
+				}
+				if ($paste['trip']) {
+					echo '<a class="trip-link" href="/trip/' . htmlspecialchars($paste['trip']) . '">';
+					echo '<span class="trip">';
+					echo htmlspecialchars('!!!' . $paste['trip']);
+					echo '</span>';
+					echo '<span class="count">';
+					echo '(1)'; // TODO
+					echo '</span>';
+					echo '</a>'; // .trip-link
+				}
+				$r = hexdec(substr($paste['uid'], 0, 2));
+				$g = hexdec(substr($paste['uid'], 2, 2));
+				$b = hexdec(substr($paste['uid'], 4, 2));
+				$class = ($r*.2126 + $g*.7152 + $b*.0722) > 128 ? 'light' : 'dark';
+				echo '<a class="uid-link ' . $class . '"'
+					. ' style="background: #' . htmlspecialchars($paste['uid']) . '"'
+					. 'href="/uid/' . htmlspecialchars($paste['uid']) . '">';
+				echo '<span class="uid">';
+				echo htmlspecialchars($paste['uid']);
+				echo '</span>';
+				echo '<span class="count">';
+				echo '(1)'; // TODO
+				echo '</span>';
+				echo '</a>'; // .uid-link
+				$date = new DateTime('@' . $paste['timestamp']);
+				$date->setTimeZone(new DateTimeZone('America/New_York'));
+				$date = $date->format('n/d/y g:i a T');
+				echo '<span class="date"'
+					. ' data-ts="' . htmlspecialchars($paste['timestamp']) . '"'
+					. ' title="' . htmlspecialchars($date) . '">';
+				echo $date;
+				echo '</span>'; // .date
+				echo '</span>'; // #meta
+				echo '<span class="actions">';
+				echo '<a href="/raw/' . htmlspecialchars($paste['id']) . '">raw</a>';
+				echo ' | ';
+				echo '<a href="/download/' . htmlspecialchars($paste['id']) . '">download</a>';
+				echo ' | ';
+				echo '<a href="/clone/' . htmlspecialchars($paste['id']) . '">clone</a>';
+				echo '</span>'; // .actions
+				echo '</div>'; // #controls
+			} ?>
 			<div id="top-menu"><?php echo $nav_menu; ?></div>
 		</div>
 		<div id="content">
