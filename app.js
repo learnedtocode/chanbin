@@ -112,11 +112,12 @@ function resize() {
 		elLines.innerText = linesText;
 		linesShown = pasteLines.length;
 		linesMarginLeft = charWidth * numChars + 9;
-		elLines.style.width = elPaste.style.marginLeft = linesMarginLeft + 'px';
-		elPaste.style.height = (pasteLines.length * charHeight + 36) + 'px';
-		var minWidth = document.documentElement.clientWidth - linesMarginLeft - 1;
-		elPaste.style.width = (Math.max(minWidth, charWidth * longestLineChars) + 36) + 'px';
 	}
+
+	elLines.style.width = elPaste.style.marginLeft = linesMarginLeft + 'px';
+	elPaste.style.height = (pasteLines.length * charHeight + 36) + 'px';
+	var minWidth = document.documentElement.clientWidth - linesMarginLeft - 1;
+	elPaste.style.width = (Math.max(minWidth, charWidth * longestLineChars) + 36) + 'px';
 }
 
 function scroll() {
