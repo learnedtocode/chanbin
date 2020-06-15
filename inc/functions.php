@@ -13,9 +13,9 @@ function page_header($title, $is_new_paste = false) {
 		dirname(__DIR__) . '/zzz/app-js-filename.txt')
 	);
 	$page_title =
-		htmlspecialchars($title)
+		htmlspecialchars(run_hooks('site_name', 'chanbin'))
 		. ' - '
-		. htmlspecialchars(run_hooks('site_name', 'chanbin'));
+		. htmlspecialchars($title);
 
 	$nav_links = [
 		'new paste' => '/',
