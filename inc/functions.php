@@ -69,10 +69,11 @@ function page_header($title, $is_new_paste = false) {
 
 function page_footer() {
 	global $page_is_new_paste;
-	if ($page_is_new_paste) { ?>
-			</form>
-	<?php } ?>
-		</div>
+?>
+			</div>
+<?php if ($page_is_new_paste) { ?>
+		</form>
+<?php } ?>
 	</body>
 </html><!-- <?php echo date('Y-m-d g:i:s'); ?> -->
 <?php
