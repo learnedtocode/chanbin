@@ -7,12 +7,14 @@ var linesMarginLeft = 0;
 var elLines = null;
 var elPaste = null;
 var elSend = null;
+var elTitle = null;
 
 document.addEventListener('DOMContentLoaded', function() {
 	document.body.className = 'js';
 	elLines = document.getElementById('lines');
 	elPaste = document.getElementById('paste');
 	elSend = document.getElementById('send');
+	elTitle = document.getElementById('title');
 
 	if (!elPaste) {
 		return;
@@ -24,9 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	followCursor();
 
 	window.addEventListener('scroll', scroll);
+
 	var r = debounce(resize, 60);
 	window.addEventListener('resize', r);
 	elPaste.addEventListener('input', r);
+
 	var f = debounce(followCursor, 60);
 	elPaste.addEventListener('input', f);
 	elPaste.addEventListener('select', f);
@@ -36,24 +40,23 @@ document.addEventListener('DOMContentLoaded', function() {
 	elPaste.addEventListener('focus', f);
 
 	if (elSend) {
-		elSend.addEventListener('click', function(e) {
-			try {
-				localStorage.setItem('login', {
-					username: document.getElementById('username').value,
-					password: document.getElementById('password').value,
-				});
-				localStorage.setItem('savedPaste', {
-					title: document.getElementById('title').value,
-					paste: paste.value,
-				});
-			} catch {}
+		var s = debounce(savePaste, 1500);
+		elPaste.addEventListener('input', s);
+		elTitle.addEventListener('input', s);
 
-			if (document.getElementById('title').value.length < 3) {
+		elSend.addEventListener('click', function(e) {
+			lset('login', {
+				username: document.getElementById('username').value,
+				password: document.getElementById('password').value,
+			});
+			savePaste();
+
+			if (elTitle.value.length < 3) {
 				alert('Paste title is required');
 				e.preventDefault();
 				return;
 			}
-			if (document.getElementById('paste').value.length < 3) {
+			if (elPaste.value.length < 3) {
 				alert('Paste content is required');
 				e.preventDefault();
 				return;
@@ -64,21 +67,27 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		});
 
-		try {
-			var saved = localStorage.getItem('login');
-			if (saved) {
-				document.getElementById('username').value = saved.username;
-				document.getElementById('password').value = saved.password;
-			}
-			saved = localStorage.getItem('savedPaste');
-			if (saved) {
-				document.getElementById('title').value = saved.title;
-				paste.value = saved.paste;
-				paste.selectionStart = paste.selectionEnd = 0;
-			}
-		} catch {}
+		var saved = lget('login');
+		if (saved) {
+			document.getElementById('username').value = saved.username;
+			document.getElementById('password').value = saved.password;
+		}
+		saved = lget('savedPaste');
+		if (saved) {
+			elTitle.value = saved.title;
+			elPaste.value = saved.paste;
+			elPaste.selectionStart = elPaste.selectionEnd = 0;
+		}
 	}
 });
+
+function savePaste() {
+	console.log('saving paste to localStorage');
+	lset('savedPaste', {
+		title: elTitle.value,
+		paste: elPaste.value,
+	});
+}
 
 function followCursor() {
 	var ss = elPaste.selectionStart;
@@ -173,4 +182,18 @@ function resize() {
 function scroll() {
 	var scrollY = ('scrollY' in window ? window.scrollY : document.documentElement.scrollTop);
 	elLines.style.marginTop = (-scrollY) + 'px';
+}
+
+function lset(name, value) {
+	try {
+		localStorage.setItem(name, JSON.stringify(value));
+	} catch {}
+}
+
+function lget(name) {
+	try {
+		return JSON.parse(localStorage.getItem(name));
+	} catch {
+		return null;
+	}
 }
