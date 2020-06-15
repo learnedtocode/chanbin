@@ -78,7 +78,7 @@ body {
 #logotext {
 	height: 24px;
 	line-height: 24px;
-	align-self: end;
+	align-self: flex-end;
 }
 
 #content {
