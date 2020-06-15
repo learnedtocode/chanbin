@@ -39,10 +39,6 @@ if ($route === '/debug-' . $config['debug_password']) {
 
 } else if ($route === '/') {
 	header('Cache-Control: no-store');
-	require dirname(__DIR__) . '/pages/coming-soon.php';
-
-} else if ($route === '/p') {
-	header('Cache-Control: no-store');
 	require dirname(__DIR__) . '/pages/index.php';
 
 } else {
