@@ -2,14 +2,15 @@ var linesShown = 0;
 var charWidth = 0;
 var charHeight = 13.5; // see css
 var headerHeight = 36; // see css
-var lines = null;
-var paste = null;
+var pastePaddingTop = 3; // see css
 var linesMarginLeft = 0;
+var elLines = null;
+var elPaste = null;
 
 document.addEventListener('DOMContentLoaded', function() {
 	document.body.className = 'js';
-	lines = document.getElementById('lines');
-	paste = document.getElementById('paste');
+	elLines = document.getElementById('lines');
+	elPaste = document.getElementById('paste');
 
 	calcCharWidth();
 	resize();
@@ -19,20 +20,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	window.addEventListener('scroll', scroll);
 	var r = debounce(resize, 60);
 	window.addEventListener('resize', r);
-	paste.addEventListener('input', r);
-	var f = debounce(followCursor, 30);
-	paste.addEventListener('input', f);
-	paste.addEventListener('select', f);
-	paste.addEventListener('keydown', f);
-	paste.addEventListener('keyup', f);
-	paste.addEventListener('click', f);
-	paste.addEventListener('focus', f);
+	elPaste.addEventListener('input', r);
+	var f = debounce(followCursor, 60);
+	elPaste.addEventListener('input', f);
+	elPaste.addEventListener('select', f);
+	elPaste.addEventListener('keydown', f);
+	elPaste.addEventListener('keyup', f);
+	elPaste.addEventListener('click', f);
+	elPaste.addEventListener('focus', f);
 });
 
 function followCursor() {
-	var ss = paste.selectionStart;
-	if (ss !== paste.selectionEnd) return;
-	var val = paste.value;
+	var ss = elPaste.selectionStart;
+	if (ss !== elPaste.selectionEnd) return;
+	var val = elPaste.value;
 	var pos = 0;
 	var row = 0;
 	var col = 0;
@@ -46,15 +47,14 @@ function followCursor() {
 		row++;
 	}
 	var de = document.documentElement;
-	var paddingTop = 3;
 	var viewport = {
-		minRow: Math.ceil((de.scrollTop - paddingTop) / charHeight),
+		minRow: Math.ceil((de.scrollTop - pastePaddingTop) / charHeight),
 		maxRow: Math.floor((de.scrollTop + de.clientHeight - headerHeight) / charHeight),
 		minCol: Math.ceil(de.scrollLeft / charWidth),
 		maxCol: Math.floor((de.scrollLeft + de.clientWidth - linesMarginLeft) / charWidth)
 	};
 	if (viewport.minRow > row) {
-		de.scrollTop = Math.max(row, 0) * charHeight + paddingTop;
+		de.scrollTop = Math.max(row, 0) * charHeight + pastePaddingTop;
 	} else if (viewport.maxRow < row) {
 		de.scrollTop = (row + 3) * charHeight - de.clientHeight + headerHeight;
 	}
@@ -93,7 +93,7 @@ function calcCharWidth() {
 }
 
 function resize() {
-	var pasteLines = paste.value.split('\n');
+	var pasteLines = elPaste.value.split('\n');
 	var longestLineChars = 0;
 	var i;
 
@@ -109,17 +109,17 @@ function resize() {
 			if (i < pasteLines.length) linesText += '\n';
 		}
 		linesText += '\n\n\n\n\n\n';
-		lines.innerText = linesText;
+		elLines.innerText = linesText;
 		linesShown = pasteLines.length;
 		linesMarginLeft = charWidth * numChars + 9;
-		lines.style.width = paste.style.marginLeft = linesMarginLeft + 'px';
-		paste.style.height = (pasteLines.length * charHeight + 36) + 'px';
+		elLines.style.width = elPaste.style.marginLeft = linesMarginLeft + 'px';
+		elPaste.style.height = (pasteLines.length * charHeight + 36) + 'px';
 		var minWidth = document.documentElement.clientWidth - linesMarginLeft - 1;
-		paste.style.width = (Math.max(minWidth, charWidth * longestLineChars) + 36) + 'px';
+		elPaste.style.width = (Math.max(minWidth, charWidth * longestLineChars) + 36) + 'px';
 	}
 }
 
 function scroll() {
 	var scrollY = ('scrollY' in window ? window.scrollY : document.documentElement.scrollTop);
-	lines.style.marginTop = (-scrollY) + 'px';
+	elLines.style.marginTop = (-scrollY) + 'px';
 }
