@@ -1,6 +1,14 @@
 <?php
 
 require dirname(__DIR__) . '/config.php';
+require dirname(__DIR__) . '/inc/functions.php';
+
+ini_set('error_log', dirname(__DIR__) . '/errors.log');
+ini_set('display_errors', false);
+
+foreach (glob(dirname(__DIR__) . '/plugins/*.php') as $plugin) {
+	require $plugin;
+}
 
 $db = @new mysqli(
 	$config['db']['host'],
@@ -12,18 +20,16 @@ if ($db && !$db->connect_errno) {
 	$db->set_charset('utf8');
 } else {
 	error_log('MySQL connection failed: ' . $db->connect_error);
-	header('HTTP/1.1 500 Internal Server Error');
-	die('<h2>A server error occurred</h2>');
+	fail(500, 'A server error occurred');
 }
 
 $route = strtok($_SERVER['REQUEST_URI'], '?');
 
 $route_c = '/' . trim($route, '/');
+$route_c = preg_replace('@/+@', '/', $route_c);
 if ($route_c !== $route) {
 	$qs = ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
-	header('HTTP/1.1 302 Found');
-	header('Location: ' . $route_c . $qs);
-	die('Redirecting...');
+	redirect($route_c . $qs);
 }
 
 if ($route === '/debug-' . $config['debug_password']) {
@@ -35,7 +41,10 @@ if ($route === '/debug-' . $config['debug_password']) {
 	header('Cache-Control: no-store');
 	require dirname(__DIR__) . '/pages/coming-soon.php';
 
+} else if ($route === '/p') {
+	header('Cache-Control: no-store');
+	require dirname(__DIR__) . '/pages/index.php';
+
 } else {
-	header('HTTP/1.1 404 Not Found');
-	die('<h2>Page Not Found</h2>');
+	fail(404, 'Page not found');
 }

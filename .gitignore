@@ -1,2 +1,6 @@
-/public/.htaccess
 /config.php
+/errors.log
+/plugins
+/public/.htaccess
+/public/assets/app.*
+/zzz
