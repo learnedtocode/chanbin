@@ -1,6 +1,9 @@
 <?php
 
-if (!run_hooks('csrf_validate', $_POST['csrf'] ?? null)) {
+if (
+	$_SERVER['REQUEST_METHOD'] !== 'POST' ||
+	!run_hooks('csrf_validate', $_POST['csrf'] ?? null)
+) {
 	fail(400, 'Page expired', true);
 }
 
@@ -19,6 +22,8 @@ if (strlen($paste['title']) > 18) $errors[] = 'Title is too long';
 if (strlen($paste['username']) > 18) $errors[] = 'Username is too long';
 if (strlen($paste['content']) < 3) $errors[] = 'Paste content is too short';
 if (strlen($paste['content']) > 90000) $errors[] = 'Paste content is too long';
+// https://stackoverflow.com/questions/6723562
+if (!preg_match('@@u', $paste['content'])) $errors[] = 'Paste content is invalid';
 
 if (!count($errors) && $paste['cloned_from']) {
 	if (!preg_match('@^[a-zA-Z0-9]{9}$@', $paste['cloned_from'])) {

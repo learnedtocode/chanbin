@@ -61,7 +61,7 @@ if ($route === '/debug-' . $config['secrets']['debug']) {
     $route_params['clone_paste_id'] = $matches[1];
 	require dirname(__DIR__) . '/pages/new-paste.php';
 
-} else if ($route === '/send' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+} else if ($route === '/send') {
 	header('Cache-Control: no-store');
 	require dirname(__DIR__) . '/pages/send.php';
 

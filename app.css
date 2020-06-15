@@ -89,6 +89,7 @@ strong {
 
 #controls {
   padding-left: 1.5em;
+  padding-right: 0.3em;
   flex-shrink: 1;
   white-space: nowrap;
   overflow: hidden;
