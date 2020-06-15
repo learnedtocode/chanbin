@@ -97,7 +97,8 @@ strong {
 #controls input {
   font-size: 13px;
 }
-#controls input[type=text] {
+#controls input[type=text],
+#controls input[type=password] {
   border: 1px solid #b7c5d9;
 }
 #controls #title {

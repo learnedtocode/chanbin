@@ -43,7 +43,7 @@ function page_header($title, $is_new_paste = false) {
 	</head>
 <?php if ($is_new_paste) { ?>
 	<body>
-		<form method="post" action="/new">
+		<form method="post" action="/send">
 			<div id="header">
 				<?php run_hooks('logo'); ?>
 				<div id="logotext"><?php echo run_hooks('logotext', 'chanbin'); ?></div>
@@ -51,7 +51,7 @@ function page_header($title, $is_new_paste = false) {
 					<span id="description">new paste:</span>
 					<input type="text" id="title" name="title" minlength="3" maxlength="18" placeholder="Title">
 					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
-					<input type="text" id="password" name="password" maxlength="99" placeholder="Tripcode">
+					<input type="password" id="password" name="password" maxlength="99" placeholder="Password">
 					<input type="submit" id="send" value="SEND">
 					<input type="hidden" name="csrf" value="<?php echo run_hooks('csrf_token'); ?>">
 				</div>
