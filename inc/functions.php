@@ -7,11 +7,15 @@ function page_header($title) {
 	$app_js_filename = trim(file_get_contents(
 		dirname(__DIR__) . '/zzz/app-js-filename.txt')
 	);
+	$page_title =
+		htmlspecialchars($title)
+		. ' - '
+		. htmlspecialchars(run_hooks('site_name', 'chanbin'));
 ?>
 <!doctype html>
 <html>
 	<head>
-		<title><?php echo htmlspecialchars($title); ?></title>
+		<title><?php echo $page_title; ?></title>
 		<link rel="stylesheet" type="text/css" href="/assets/<?php echo $app_css_filename; ?>">
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
