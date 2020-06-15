@@ -85,7 +85,7 @@ function page_header($title, $options = []) {
 					echo '<span class="user">';
 					echo htmlspecialchars($paste['username']);
 					echo '</span>';
-				} else {
+				} else if (!$paste['trip']) {
 					echo '<span class="anon">Anon</span>';
 				}
 				if ($paste['trip']) {
@@ -94,7 +94,7 @@ function page_header($title, $options = []) {
 					echo htmlspecialchars('!!!' . $paste['trip']);
 					echo '</span>';
 					echo '<span class="count">';
-					echo '(1)'; // TODO
+					echo '(' . htmlspecialchars($paste['trip_count']) . ')';
 					echo '</span>';
 					echo '</a>'; // .trip-link
 				}
@@ -104,12 +104,12 @@ function page_header($title, $options = []) {
 				$class = ($r*.2126 + $g*.7152 + $b*.0722) > 128 ? 'light' : 'dark';
 				echo '<a class="uid-link ' . $class . '"'
 					. ' style="background: #' . htmlspecialchars($paste['uid']) . '"'
-					. 'href="/uid/' . htmlspecialchars($paste['uid']) . '">';
+					. 'href="/uid/' . htmlspecialchars($paste['ip_hash']) . '">';
 				echo '<span class="uid">';
 				echo htmlspecialchars($paste['uid']);
 				echo '</span>';
 				echo '<span class="count">';
-				echo '(1)'; // TODO
+				echo '(' . htmlspecialchars($paste['uid_count']) . ')';
 				echo '</span>';
 				echo '</a>'; // .uid-link
 				$date = new DateTime('@' . $paste['timestamp']);
