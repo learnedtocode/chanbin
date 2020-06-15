@@ -1,6 +1,6 @@
 <?php
 
-page_header('Recent Pastes');
+page_header('New Paste');
 
 ?>
 <div id="lines"></div>

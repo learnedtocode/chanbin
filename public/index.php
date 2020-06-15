@@ -39,7 +39,7 @@ if ($route === '/debug-' . $config['debug_password']) {
 
 } else if ($route === '/') {
 	header('Cache-Control: no-store');
-	require dirname(__DIR__) . '/pages/index.php';
+	require dirname(__DIR__) . '/pages/new-paste.php';
 
 } else {
 	fail(404, 'Page not found');
