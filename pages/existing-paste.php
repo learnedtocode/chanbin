@@ -12,6 +12,7 @@ if ($route_params['format'] === 'raw' || $route_params['format'] === 'download')
 			. '_' . $paste->id . '.txt';
 		header('Content-Disposition: attachment; filename="' . $filename . '"');
 	}
+	run_hooks('req_end', 200);
 	die($paste->content);
 }
 
