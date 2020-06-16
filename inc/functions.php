@@ -69,7 +69,7 @@ function page_header($title, $options = []) {
 					<input type="text" id="title" name="title" minlength="3" maxlength="18" placeholder="Title">
 					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
 					<input type="password" id="password" name="password" maxlength="99" placeholder="Password">
-					<input type="submit" id="send" value="SEND">
+					<input type="submit" id="send" value="SAVE">
 					<input type="hidden" name="cloned_from" value="<?php echo $clone_paste_id ? htmlspecialchars($clone_paste_id) : '' ?>">
 					<input type="hidden" name="csrf" value="<?php echo htmlspecialchars(run_hooks('csrf_token')); ?>">
 				</div>
