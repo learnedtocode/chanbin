@@ -9,7 +9,7 @@ if (
 
 $paste = [
 	'title' => clean_ascii($_POST['title'] ?? ''),
-	'username' => clean_ascii($_POST['username'] ?? ''),
+	'username' => strtok(clean_ascii($_POST['username'] ?? ''), '#'),
 	'trip' => run_hooks('password_to_trip', $_POST['password'] ?? null),
 	'content' => $_POST['paste'] ?? '',
 	'cloned_from' => $_POST['cloned_from'] ?? '',
