@@ -11,6 +11,9 @@ foreach (glob(dirname(__DIR__) . '/plugins/*.php') as $plugin) {
 	require $plugin;
 }
 
+$ip_hash_full = run_hooks('ip_hash_full');
+$ip_hash_display = run_hooks('ip_hash_to_display', $ip_hash_full);
+
 $db = @new mysqli(
 	$config['db']['host'],
 	$config['db']['user'],
@@ -33,9 +36,6 @@ if ($route_c !== $route) {
     if ($qs) $qs = '?' . $qs;
 	redirect($route_c . $qs);
 }
-
-$ip_hash_full = run_hooks('ip_hash_full');
-$ip_hash_display = run_hooks('ip_hash_to_display', $ip_hash_full);
 
 $route_params = [];
 
