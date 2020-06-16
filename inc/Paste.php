@@ -44,7 +44,7 @@ class Paste {
 		}
 
 		if (!empty($paste_data['trip']) && !isset($paste_data['trip_count'])) {
-			if (!isset(self::$counts_by_trip[$paste_data['ip_hash']])) {
+			if (!isset(self::$counts_by_trip[$paste_data['trip']])) {
 				$q_count = $db->prepare("
 					select count(*) as trip_count
 					from pastes
@@ -55,10 +55,10 @@ class Paste {
 				$q_count->execute();
 				$q_count = $q_count->get_result();
 				$count = $q_count->fetch_assoc();
-				self::$counts_by_trip[$paste_data['ip_hash']] =
+				self::$counts_by_trip[$paste_data['trip']] =
 					$count['trip_count'];
 			}
-			$paste_data['trip_count'] = self::$counts_by_trip[$paste_data['ip_hash']];
+			$paste_data['trip_count'] = self::$counts_by_trip[$paste_data['trip']];
 		}
 
 		if (!isset($paste_data['uid'])) {
