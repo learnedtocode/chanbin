@@ -198,7 +198,7 @@ class Paste {
 	}
 
 	public function getSizeHTML() {
-		$size = number_format(mb_strlen($this->content));
+		$size = number_format(strlen($this->content));
 		return self::formatLines([
 			'<span class="size">'
 				. htmlspecialchars($size)
