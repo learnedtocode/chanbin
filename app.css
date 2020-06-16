@@ -62,7 +62,11 @@ a {
   color: #30a;
   text-decoration: none;
 }
-a:hover, a:focus {
+#logotext {
+  color: #000;
+}
+a:hover, a:focus,
+#logotext:hover, #logotext:focus {
   color: #30f;
   text-decoration: underline;
 }
@@ -85,6 +89,26 @@ strong {
 #logo {
 	width: 33px;
 	height: 33px;
+}
+body.js #logo {
+  cursor: pointer;
+}
+body.js #logo:hover path.black,
+#header.logo-hover #logo path.black {
+  fill: #30f;
+}
+#logo ellipse {
+  fill: none;
+  stroke: #000;
+  stroke-width: 15;
+}
+body.js #logo:hover ellipse,
+#header.logo-hover #logo ellipse {
+  stroke: #30f;
+}
+#header.logo-hover #logotext {
+  color: #30f;
+  text-decoration: underline;
 }
 
 #controls {

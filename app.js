@@ -39,6 +39,28 @@ document.addEventListener('DOMContentLoaded', function() {
 	elPaste.addEventListener('click', f);
 	elPaste.addEventListener('focus', f);
 
+	var elHeader = document.getElementById('header');
+	var elLogo = document.getElementById('logo');
+	var elLogoText = document.getElementById('logotext');
+	function logoEnter() { elHeader.className = 'logo-hover'; }
+	function logoLeave() { elHeader.className = ''; }
+	elLogo.addEventListener('mouseenter', logoEnter);
+	elLogo.addEventListener('mouseleave', logoLeave);
+	elLogoText.addEventListener('mouseenter', logoEnter);
+	elLogoText.addEventListener('mouseleave', logoLeave);
+	elLogo.addEventListener('click', function() {
+		elLogoText.focus();
+		elLogoText.click();
+	});
+	elLogoText.addEventListener('click', function(e) {
+		if (window.location.pathname === '/') { // new paste
+			e.preventDefault();
+			elTitle.value = '';
+			elPaste.select();
+			elPaste.focus();
+		}
+	});
+
 	if (elSend) {
 		var s = debounce(savePaste, 1500);
 		elPaste.addEventListener('input', s);
@@ -61,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				e.preventDefault();
 				return;
 			}
-			if (document.location.hash !== '#go') {
+			if (window.location.hash !== '#go') {
 				alert('This is just a preview, not ready for use yet');
 				e.preventDefault();
 			}
@@ -73,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			document.getElementById('password').value = saved.password;
 		}
 		saved = lget('savedPaste');
-		if (saved && document.location.pathname === '/') { // new paste
+		if (saved && window.location.pathname === '/') { // new paste
 			elTitle.value = saved.title;
 			elPaste.value = saved.paste;
 			elPaste.selectionStart = elPaste.selectionEnd = 0;

@@ -58,7 +58,7 @@ function page_header($title, $options = []) {
 		<form method="post" action="/send">
 			<div id="header">
 				<?php run_hooks('logo'); ?>
-				<div id="logotext"><?php echo run_hooks('logotext', 'chanbin'); ?></div>
+				<a id="logotext" href="/"><?php echo run_hooks('logotext', 'chanbin'); ?></a>
 				<div id="controls">
 					<span id="meta"><?php echo $paste_status; ?></span>
 					<input type="text" id="title" name="title" minlength="3" maxlength="18" placeholder="Title">
@@ -75,7 +75,7 @@ function page_header($title, $options = []) {
 	<body>
 		<div id="header">
 			<?php run_hooks('logo'); ?>
-			<div id="logotext"><?php echo run_hooks('logotext', 'chanbin'); ?></div>
+			<a id="logotext" href="/"><?php echo run_hooks('logotext', 'chanbin'); ?></a>
 			<?php if ($paste) {
 				echo '<div id="controls" class="paste-info">';
 				echo $paste->getTitleHTML();
