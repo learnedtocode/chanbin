@@ -130,19 +130,32 @@ body.js #logo:hover ellipse,
   border: 1px solid #b7c5d9;
 }
 #controls #title {
-  width: 72px;
+  width: 78px;
 }
 #controls #username {
   width: 75px;
   background: #dfd;
 }
 #controls #password {
-  width: 78px;
+  width: 72px;
   background: #fdd;
 }
 #controls #send {
   width: 60px;
   padding: 0;
+}
+@media (min-width: 768px) {
+  #controls #title {
+	width: 108px;
+  }
+  #controls #username {
+	width: 102px;
+	background: #dfd;
+  }
+  #controls #password {
+	width: 96px;
+	background: #fdd;
+  }
 }
 
 #controls .title {
