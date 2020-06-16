@@ -51,6 +51,7 @@ function page_header($title, $options = []) {
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script src="/assets/<?php echo $app_js_filename; ?>"></script>
+		<?php run_hooks('favicon'); ?>
 	</head>
 <?php if ($paste_form) { ?>
 	<body>
