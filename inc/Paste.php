@@ -93,7 +93,7 @@ class Paste {
 			$sql_lines[] = "and $key = ?";
 		}
 		$sql_lines[] = 'order by timestamp desc';
-		$sql_lines[] = 'limit 30';
+		$sql_lines[] = 'limit 300';
 		$sql = self::formatLines($sql_lines, false);
 		$q_list = $db->prepare($sql);
 		if ($key) {
