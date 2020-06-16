@@ -84,10 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				e.preventDefault();
 				return;
 			}
-			if (window.location.hash !== '#go') {
-				alert('This is just a preview, not ready for use yet');
-				e.preventDefault();
-			}
 		});
 
 		var saved = lget('login');
