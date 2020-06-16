@@ -130,7 +130,7 @@ class Paste {
 		return self::formatLines([
 			'<span class="title">'
 				. htmlspecialchars($this->title)
-				. '</span>',
+			. '</span>',
 		]);
 	}
 
@@ -138,8 +138,9 @@ class Paste {
 		$lines = [];
 	
 		if ($this->username) {
-			$lines[] = '<span class="user">'
-				. htmlspecialchars($this->username)
+			$lines[] =
+				'<span class="user">'
+					. htmlspecialchars($this->username)
 				. '</span>';
 		} else if (!$this->trip) {
 			if ($anon_full_word) {
@@ -151,15 +152,15 @@ class Paste {
 		if ($this->trip) {
 			$lines = array_merge($lines, [
 				'<a class="trip-link" href="/trip/'
-					. htmlspecialchars($this->trip)
-					. '">',
-				'<span class="trip">'
-					. htmlspecialchars('!!!' . $this->trip)
+				. htmlspecialchars($this->trip)
+				. '">'
+					. '<span class="trip">'
+						. htmlspecialchars('!!!' . $this->trip)
 					. '</span>'
 					. '<span class="count">'
-					. '(' . htmlspecialchars($this->trip_count) . ')'
-					. '</span>',
-				'</a>',
+						. '(' . htmlspecialchars($this->trip_count) . ')'
+					. '</span>'
+				. '</a>',
 			]);
 		}
 
@@ -174,13 +175,13 @@ class Paste {
 
 		return self::formatLines([
 			'<a class="uid-link ' . $class . '"'
-				. ' style="background: #' . htmlspecialchars($this->uid) . '"'
-				. ' href="/uid/' . htmlspecialchars($this->ip_hash) . '">',
-			'<span class="uid">'
-				. htmlspecialchars($this->uid)
+			. ' style="background: #' . htmlspecialchars($this->uid) . '"'
+			. ' href="/uid/' . htmlspecialchars($this->ip_hash) . '">',
+				'<span class="uid">'
+					. htmlspecialchars($this->uid)
 				. '</span>'
 				. '<span class="count">'
-				. '(' . htmlspecialchars($this->uid_count) . ')'
+					. '(' . htmlspecialchars($this->uid_count) . ')'
 				. '</span>'
 			. '</a>',
 		]);
@@ -190,10 +191,10 @@ class Paste {
 		$date = $this->getReadableDate();
 		return self::formatLines([
 			'<span class="date"'
-				. ' data-ts="' . htmlspecialchars($this->timestamp) . '"'
-				. ' title="' . htmlspecialchars($date) . '">'
+			. ' data-ts="' . htmlspecialchars($this->timestamp) . '"'
+			. ' title="' . htmlspecialchars($date) . '">'
 				. $date
-				. '</span>',
+			. '</span>',
 		]);
 	}
 
@@ -202,7 +203,7 @@ class Paste {
 		return self::formatLines([
 			'<span class="size">'
 				. htmlspecialchars($size)
-				. '</span>',
+			. '</span>',
 		]);
 	}
 }
