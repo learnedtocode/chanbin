@@ -21,18 +21,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	elLogo.addEventListener('mouseleave', logoLeave);
 	elLogoText.addEventListener('mouseenter', logoEnter);
 	elLogoText.addEventListener('mouseleave', logoLeave);
+	elLogoText.addEventListener('focus', logoEnter);
+	elLogoText.addEventListener('blur', logoLeave);
 	elLogo.addEventListener('click', function() {
 		elLogoText.focus();
 		elLogoText.click();
 	});
-	elLogoText.addEventListener('click', function(e) {
-		if (window.location.pathname === '/') { // new paste
-			e.preventDefault();
-			elTitle.value = '';
-			elPaste.select();
-			elPaste.focus();
-		}
-	});
+	elLogoText.addEventListener('click', clearPaste);
+	var elNavNewPaste = document.getElementById('nav-new-paste');
+	if (elNavNewPaste) {
+		elNavNewPaste.addEventListener('click', clearPaste);
+	}
 
 	elLines = document.getElementById('lines');
 	elPaste = document.getElementById('paste');
@@ -61,6 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	elPaste.addEventListener('keyup', f);
 	elPaste.addEventListener('click', f);
 	elPaste.addEventListener('focus', f);
+
+	elPaste.focus();
 
 	if (elSend) {
 		var s = debounce(savePaste, 1500);
@@ -109,6 +110,12 @@ function savePaste() {
 		title: elTitle.value,
 		paste: elPaste.value,
 	});
+}
+
+function clearPaste() {
+	elTitle.value = '';
+	elPaste.value = '';
+	lremove('savedPaste');
 }
 
 function followCursor() {
@@ -218,4 +225,10 @@ function lget(name) {
 	} catch {
 		return null;
 	}
+}
+
+function lremove(name) {
+	try {
+		localStorage.removeItem(name);
+	} catch {}
 }

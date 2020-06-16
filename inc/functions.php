@@ -28,11 +28,16 @@ function page_header($title, $options = []) {
 	];
 	$nav_menu = '';
 	foreach ($nav_links as $text => $href) {
-		if ($route === $href) {
+		if ($route === $href && $href !== '/') {
 			continue;
 		}
 		if ($nav_menu) $nav_menu .= ' | ';
-		$nav_menu .= '<a href="' . $href . '">' . $text . '</a>';
+		$id = 'nav-' . str_replace(' ', '-', $text);
+		$nav_menu .=
+			'<a href="' . htmlspecialchars($href) . '"'
+			. ' id="' . htmlspecialchars($id) . '">'
+			. htmlspecialchars($text)
+			. '</a>';
 	}
 
 	$paste_status = 'new paste:';
