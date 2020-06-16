@@ -18,7 +18,7 @@ $paste = [
 $errors = [];
 
 if (strlen($paste['title']) < 3) $errors[] = 'Title is too short';
-if (strlen($paste['title']) > 18) $errors[] = 'Title is too long';
+if (strlen($paste['title']) > 36) $errors[] = 'Title is too long';
 if (strlen($paste['username']) > 18) $errors[] = 'Username is too long';
 if (strlen($paste['content']) < 3) $errors[] = 'Paste content is too short';
 if (strlen($paste['content']) > 90000) $errors[] = 'Paste content is too long';
