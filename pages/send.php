@@ -61,7 +61,7 @@ if (!count($errors)) {
 		if ($limit['blocked_until'] === 0) {
 			$errors = [
 				'Inside you there are two wolves',
-				'One is banned',
+				'One of them is banned',
 				'The other one is banned',
 				'<strong class="error">You are banned</strong>',
 				'Reason: ' . htmlentities($limit['reason_text']),

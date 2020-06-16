@@ -1,10 +1,12 @@
 <?php
 
 require dirname(__DIR__) . '/config.php';
+require dirname(__DIR__) . '/inc/Paste.php';
 require dirname(__DIR__) . '/inc/functions.php';
 
 ini_set('error_log', dirname(__DIR__) . '/errors.log');
 ini_set('display_errors', false);
+mb_internal_encoding('UTF-8');
 
 foreach (glob(dirname(__DIR__) . '/plugins/*.php') as $plugin) {
 	require $plugin;
@@ -28,7 +30,8 @@ $route = strtok($_SERVER['REQUEST_URI'], '?');
 $route_c = '/' . trim($route, '/');
 $route_c = preg_replace('@/+@', '/', $route_c);
 if ($route_c !== $route) {
-	$qs = ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
+    $qs = $_SERVER['QUERY_STRING'] ?? '';
+    if ($qs) $qs = '?' . $qs;
 	redirect($route_c . $qs);
 }
 
@@ -49,6 +52,23 @@ if ($route === '/debug-' . $config['secrets']['debug']) {
 } else if ($route === '/about') {
 	header('Cache-Control: max-age=3600');
 	require dirname(__DIR__) . '/pages/about.php';
+
+} else if ($route === '/recent') {
+	header('Cache-Control: max-age=6');
+    $route_params['list_type'] = 'recent';
+    require dirname(__DIR__) . '/pages/list.php';
+
+} else if (preg_match('@^/uid/([a-zA-Z0-9]{12})$@', $route, $matches)) {
+	header('Cache-Control: max-age=6');
+    $route_params['list_type'] = 'uid';
+    $route_params['list_ip_hash'] = $matches[1];
+    require dirname(__DIR__) . '/pages/list.php';
+
+} else if (preg_match('@^/trip/([a-zA-Z0-9]{12})$@', $route, $matches)) {
+	header('Cache-Control: max-age=6');
+    $route_params['list_type'] = 'trip';
+    $route_params['list_trip'] = $matches[1];
+    require dirname(__DIR__) . '/pages/list.php';
 
 } else if (preg_match('@^/(paste|raw|download)/([a-zA-Z0-9]{9})$@', $route, $matches)) {
 	header('Cache-Control: max-age=60');

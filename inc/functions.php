@@ -76,57 +76,19 @@ function page_header($title, $options = []) {
 			<?php run_hooks('logo'); ?>
 			<div id="logotext"><?php echo run_hooks('logotext', 'chanbin'); ?></div>
 			<?php if ($paste) {
-				echo '<div id="controls">';
-				echo '<span class="title">';
-				echo htmlspecialchars($paste['title']);
-				echo '</span>';
+				echo '<div id="controls" class="paste-info">';
+				echo $paste->getTitleHTML();
 				echo '<span id="meta">';
-				if ($paste['username']) {
-					echo '<span class="user">';
-					echo htmlspecialchars($paste['username']);
-					echo '</span>';
-				} else if (!$paste['trip']) {
-					echo '<span class="anon">Anon</span>';
-				}
-				if ($paste['trip']) {
-					echo '<a class="trip-link" href="/trip/' . htmlspecialchars($paste['trip']) . '">';
-					echo '<span class="trip">';
-					echo htmlspecialchars('!!!' . $paste['trip']);
-					echo '</span>';
-					echo '<span class="count">';
-					echo '(' . htmlspecialchars($paste['trip_count']) . ')';
-					echo '</span>';
-					echo '</a>'; // .trip-link
-				}
-				$r = hexdec(substr($paste['uid'], 0, 2));
-				$g = hexdec(substr($paste['uid'], 2, 2));
-				$b = hexdec(substr($paste['uid'], 4, 2));
-				$class = ($r*.2126 + $g*.7152 + $b*.0722) > 128 ? 'light' : 'dark';
-				echo '<a class="uid-link ' . $class . '"'
-					. ' style="background: #' . htmlspecialchars($paste['uid']) . '"'
-					. 'href="/uid/' . htmlspecialchars($paste['ip_hash']) . '">';
-				echo '<span class="uid">';
-				echo htmlspecialchars($paste['uid']);
-				echo '</span>';
-				echo '<span class="count">';
-				echo '(' . htmlspecialchars($paste['uid_count']) . ')';
-				echo '</span>';
-				echo '</a>'; // .uid-link
-				$date = new DateTime('@' . $paste['timestamp']);
-				$date->setTimeZone(new DateTimeZone('America/New_York'));
-				$date = $date->format('n/d/y g:i a T');
-				echo '<span class="date"'
-					. ' data-ts="' . htmlspecialchars($paste['timestamp']) . '"'
-					. ' title="' . htmlspecialchars($date) . '">';
-				echo $date;
-				echo '</span>'; // .date
+				echo $paste->getUserTripHTML();
+				echo $paste->getUIDHTML();
+				echo $paste->getDateHTML();
 				echo '</span>'; // #meta
 				echo '<span class="actions">';
-				echo '<a href="/raw/' . htmlspecialchars($paste['id']) . '">raw</a>';
+				echo '<a href="/raw/' . htmlspecialchars($paste->id) . '">raw</a>';
 				echo ' | ';
-				echo '<a href="/download/' . htmlspecialchars($paste['id']) . '">download</a>';
+				echo '<a href="/download/' . htmlspecialchars($paste->id) . '">download</a>';
 				echo ' | ';
-				echo '<a href="/clone/' . htmlspecialchars($paste['id']) . '">clone</a>';
+				echo '<a href="/clone/' . htmlspecialchars($paste->id) . '">clone</a>';
 				echo '</span>'; // .actions
 				echo '</div>'; // #controls
 			} ?>
@@ -144,7 +106,7 @@ function page_footer() {
 		</form>
 <?php } ?>
 	</body>
-</html><!-- <?php echo date('Y-m-d g:i:s'); ?> -->
+</html><!-- <?php echo date('Y-m-d H:i:s'); ?> -->
 <?php
 }
 

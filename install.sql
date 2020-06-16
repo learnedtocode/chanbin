@@ -12,9 +12,10 @@ create table pastes (
 	cloned_from char(9) character set ascii default null,
 	times_viewed int(11) unsigned not null default 0,
 	primary key id (id),
-	key trip_deleted (trip, deleted),
-	key ip_hash_deleted (ip_hash, deleted),
-	key is_mod_action_deleted (is_mod_action, deleted)
+	key deleted_timestamp (deleted, timestamp),
+	key trip_deleted_timestamp (trip, deleted, timestamp),
+	key ip_hash_deleted_timestamp (ip_hash, deleted, timestamp),
+	key is_mod_action_deleted_timestamp (is_mod_action, deleted, timestamp)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 create table limits (

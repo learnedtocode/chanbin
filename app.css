@@ -122,32 +122,34 @@ strong {
 }
 
 #controls .title {
-  font-weight: bold;
-  margin-right: 0.9em;
+  margin-right: 0.6em;
 }
-#controls .anon {
-  font-style: italic;
-}
-#controls .trip-link {
-  color: #093;
-}
-#controls .trip,
 #controls .count {
   margin-left: 0.15em;
 }
 #controls .date,
 #controls .uid-link,
 #controls .actions {
-  margin-left: 0.45em;
+  margin-left: 0.3em;
 }
-#controls .uid-link {
+
+.paste-info .title {
+  font-weight: bold;
+}
+.paste-info .anon {
+  font-style: italic;
+}
+.paste-info .trip-link {
+  color: #093;
+}
+.paste-info .uid-link {
   border-radius: 3px;
   padding: 1px 2px;
 }
-#controls .uid-link.dark {
+.paste-info .uid-link.dark {
   color: #fff;
 }
-#controls .uid-link.light {
+.paste-info .uid-link.light {
   color: #000;
 }
 
@@ -179,6 +181,47 @@ strong {
 .error, .warning {
   color: #900;
 }
+#page-text .paste-list {
+  font-size: 13px;
+  line-height: 22px;
+}
+
+.paste-list {
+  border-top: 1px solid rgba(214, 218, 240, 0.6);
+  border-bottom: 1px solid rgba(214, 218, 240, 0.6);
+}
+.paste-list tr.header {
+  background: rgba(214, 218, 240, 0.6);
+}
+.paste-list th {
+  font-weight: bold;
+}
+.paste-list th,
+.paste-list td {
+  text-align: left;
+  padding: 0 0.3em;
+  border-left: 1px solid rgba(214, 218, 240, 0.6);
+}
+.paste-list td {
+  border-top: 1px solid rgba(214, 218, 240, 0.6);
+  color: rgba(0, 0, 0, 0.75);
+}
+.paste-list .cell-index,
+.paste-list .cell-size {
+  text-align: right;
+}
+.paste-list .cell-size {
+  border-right: 1px solid rgba(214, 218, 240, 0.6);
+}
+.paste-list .count {
+  margin-left: 0.15em;
+}
+.paste-list .anon {
+  opacity: 0.75;
+}
+.paste-list a {
+  padding: 0.3em 0;
+}
 
 #lines, #paste, #calc {
 	margin: 0;
@@ -200,7 +243,7 @@ strong {
 	left: 0;
 	overflow: hidden;
 	width: 60px;
-	background: rgb(241, 242, 250);
+	background: #f1f2fa;
 	color: #777;
 	z-index: 3;
 	min-height: 300px;
