@@ -11,6 +11,29 @@ var elTitle = null;
 
 document.addEventListener('DOMContentLoaded', function() {
 	document.body.className = 'js';
+
+	var elHeader = document.getElementById('header');
+	var elLogo = document.getElementById('logo');
+	var elLogoText = document.getElementById('logotext');
+	function logoEnter() { elHeader.className = 'logo-hover'; }
+	function logoLeave() { elHeader.className = ''; }
+	elLogo.addEventListener('mouseenter', logoEnter);
+	elLogo.addEventListener('mouseleave', logoLeave);
+	elLogoText.addEventListener('mouseenter', logoEnter);
+	elLogoText.addEventListener('mouseleave', logoLeave);
+	elLogo.addEventListener('click', function() {
+		elLogoText.focus();
+		elLogoText.click();
+	});
+	elLogoText.addEventListener('click', function(e) {
+		if (window.location.pathname === '/') { // new paste
+			e.preventDefault();
+			elTitle.value = '';
+			elPaste.select();
+			elPaste.focus();
+		}
+	});
+
 	elLines = document.getElementById('lines');
 	elPaste = document.getElementById('paste');
 	elSend = document.getElementById('send');
@@ -38,28 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	elPaste.addEventListener('keyup', f);
 	elPaste.addEventListener('click', f);
 	elPaste.addEventListener('focus', f);
-
-	var elHeader = document.getElementById('header');
-	var elLogo = document.getElementById('logo');
-	var elLogoText = document.getElementById('logotext');
-	function logoEnter() { elHeader.className = 'logo-hover'; }
-	function logoLeave() { elHeader.className = ''; }
-	elLogo.addEventListener('mouseenter', logoEnter);
-	elLogo.addEventListener('mouseleave', logoLeave);
-	elLogoText.addEventListener('mouseenter', logoEnter);
-	elLogoText.addEventListener('mouseleave', logoLeave);
-	elLogo.addEventListener('click', function() {
-		elLogoText.focus();
-		elLogoText.click();
-	});
-	elLogoText.addEventListener('click', function(e) {
-		if (window.location.pathname === '/') { // new paste
-			e.preventDefault();
-			elTitle.value = '';
-			elPaste.select();
-			elPaste.focus();
-		}
-	});
 
 	if (elSend) {
 		var s = debounce(savePaste, 1500);
