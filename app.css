@@ -79,7 +79,8 @@ strong {
 	top: 0;
 	left: 0;
 	right: 0;
-	height: 36px;
+	height: 42px;
+	padding: 3px 6px;
 	line-height: 36px;
 	background: #d6daf0;
 	border-bottom: 3px solid #b7c5d9;
@@ -200,7 +201,7 @@ body.js #logo:hover ellipse,
 }
 
 #content {
-  margin-top: 36px; /* .header height incl border */
+  margin-top: 42px; /* .header height incl border */
 }
 #page-text {
   padding: 1em;
@@ -262,12 +263,12 @@ body.js #logo:hover ellipse,
 #paste {
 	margin: 0;
 	position: absolute;
-	top: 36px; /* .header height incl border */
+	top: 42px; /* .header height incl border */
 	left: 0;
 	right: 0;
 	bottom: 0; /* doesn't work? */
-	height: calc(100% - 36px); /* .header height incl border */
-	padding: 3px;
+	height: calc(100% - 42px); /* .header height incl border */
+	padding: 9px;
 	font-size: 12px;
 	font-family: monospace;
 	white-space: pre-wrap;
