@@ -15,7 +15,6 @@ page_header('New Paste', [
 	'clone_paste_id' => $route_params['clone_paste_id'],
 ]);
 
-echo '<div id="lines"></div>';
 echo '<textarea id="paste" name="paste" maxlength="90000">';
 echo htmlspecialchars($content);
 echo '</textarea>';

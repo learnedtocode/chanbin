@@ -259,43 +259,24 @@ body.js #logo:hover ellipse,
   padding: 0.3em 0;
 }
 
-#lines, #paste, #calc {
+#paste {
 	margin: 0;
+	position: absolute;
+	top: 36px; /* .header height incl border */
+	left: 0;
+	right: 0;
+	bottom: 0; /* doesn't work? */
+	height: calc(100% - 36px);
 	padding: 3px;
 	font-size: 12px;
 	font-family: monospace;
-	white-space: pre;
+	white-space: pre-wrap;
 	border: none;
 	line-height: 13.5px;
-}
-#calc {
-	padding: 0;
-	display: inline-block;
-}
-#lines {
-	display: none;
-	position: fixed;
-	top: 36px;
-	left: 0;
-	overflow: hidden;
-	width: 60px;
-	background: #f1f2fa;
-	color: #777;
-	z-index: 3;
-	min-height: 300px;
-}
-body.js #lines {
-	display: block;
-}
-#paste {
 	display: block;
 	width: 100%;
-	min-height: 300px;
 	resize: none;
 	outline: none;
-}
-body.js #paste {
-	overflow: hidden;
 }
 textarea[readonly] {
 	opacity: 0.75;

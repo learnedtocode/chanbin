@@ -18,7 +18,6 @@ if ($route_params['format'] === 'raw' || $route_params['format'] === 'download')
 
 page_header('Paste: ' . $paste->title, ['paste' => $paste]);
 
-echo '<div id="lines"></div>';
 echo '<textarea id="paste" name="paste" maxlength="90000" readonly>';
 echo htmlspecialchars($paste->content);
 echo '</textarea>';
