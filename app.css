@@ -141,8 +141,7 @@ body.js #logo:hover ellipse,
   background: #fdd;
 }
 #controls #send {
-  width: 60px;
-  padding: 0;
+  padding: 0 0.6em;
 }
 @media (min-width: 768px) {
   #controls #title {

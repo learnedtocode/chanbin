@@ -85,6 +85,15 @@ document.addEventListener('DOMContentLoaded', function() {
 				e.preventDefault();
 				return;
 			}
+
+			setTimeout(function() {
+				elSend.disabled = true;
+				elSend.value = 'SAVING…';
+			}, 30);
+			setTimeout(function() {
+				elSend.disabled = false;
+				elSend.value = 'SAVE';
+			}, 6000);
 		});
 
 		var saved = lget('login');
