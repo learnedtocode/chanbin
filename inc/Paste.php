@@ -171,11 +171,20 @@ class Paste {
 		$r = hexdec(substr($this->uid, 0, 2));
 		$g = hexdec(substr($this->uid, 2, 2));
 		$b = hexdec(substr($this->uid, 4, 2));
+		if ($r < 150 && $r > $g - 30 && $r > $b - 60) {
+			$r = 255 - $r;
+			$g = 255 - $g;
+			$b = 255 - $b;
+		}
+		$color =
+			str_pad(dechex($r), 2, '0', STR_PAD_LEFT) .
+			str_pad(dechex($g), 2, '0', STR_PAD_LEFT) .
+			str_pad(dechex($b), 2, '0', STR_PAD_LEFT);
 		$class = ($r*.2126 + $g*.7152 + $b*.0722) > 128 ? 'light' : 'dark';
 
 		return self::formatLines([
 			'<a class="uid-link ' . $class . '"'
-			. ' style="background: #' . htmlspecialchars($this->uid) . '"'
+			. ' style="background: #' . htmlspecialchars($color) . '"'
 			. ' href="/uid/' . htmlspecialchars($this->ip_hash) . '">',
 				'<span class="uid">'
 					. htmlspecialchars($this->uid)
