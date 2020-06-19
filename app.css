@@ -282,6 +282,7 @@ body.js #logo:hover ellipse,
   font-size: 24px;
   font-weight: bold;
 }
+#page-text ul,
 #page-text p {
   margin-bottom: 12px;
 }
