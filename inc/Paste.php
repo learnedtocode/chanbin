@@ -120,15 +120,10 @@ class Paste {
 		return implode("\n", $lines) . ($trailing ? "\n" : '');
 	}
 
-	public function getReadableDate() {
-		$date = new DateTime('@' . $this->timestamp);
-		$date->setTimeZone(new DateTimeZone('America/New_York'));
-		return $date->format('n/d/y g:i a T');
-	}
-
 	public function getTitleHTML() {
 		return self::formatLines([
-			'<span class="title">'
+			'<span class="paste-title"'
+			. ' title="' . htmlspecialchars($this->title) . '">'
 				. htmlspecialchars($this->title)
 			. '</span>',
 		]);
@@ -155,7 +150,11 @@ class Paste {
 				. htmlspecialchars($this->trip)
 				. '">'
 					. '<span class="trip">'
-						. htmlspecialchars('!!!' . $this->trip)
+						. htmlspecialchars('!!!' . substr($this->trip, 0, 3))
+						. '<span class="narrow">&hellip;</span>'
+						. '<span class="wide">'
+							. htmlspecialchars(substr($this->trip, 3))
+						. '</span>'
 					. '</span>'
 					. '<span class="count">'
 						. '(' . htmlspecialchars($this->trip_count) . ')'
@@ -197,12 +196,19 @@ class Paste {
 	}
 
 	public function getDateHTML() {
-		$date = $this->getReadableDate();
+		$date = new DateTime('@' . $this->timestamp);
+		$date->setTimeZone(new DateTimeZone('America/New_York'));
+
+		$title = $date->format('n/d/y g:i:s a T');
+		$time = $date->format('g:i a T');
+		$date = $date->format('n/d/y');
+
 		return self::formatLines([
 			'<span class="date"'
 			. ' data-ts="' . htmlspecialchars($this->timestamp) . '"'
-			. ' title="' . htmlspecialchars($date) . '">'
-				. $date
+			. ' title="' . htmlspecialchars($title) . '">'
+				. htmlspecialchars($date)
+				. '<span class="wide"> ' . htmlspecialchars($time) . '</span>'
 			. '</span>',
 		]);
 	}

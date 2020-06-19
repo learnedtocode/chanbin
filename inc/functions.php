@@ -7,6 +7,16 @@ function page_header($title, $options = []) {
 	$clone_paste_id = $options['clone_paste_id'] ?? null;
 	$paste = $options['paste'] ?? null;
 
+	if (isset($options['body_class'])) {
+		$body_class = $options['body_class'];
+	} else if ($paste_form) {
+		$body_class = 'new-paste';
+	} else if ($paste) {
+		$body_class = 'view-paste';
+	} else {
+		$body_class = '';
+	}
+
 	global $route, $page_paste_form;
 	$page_paste_form = $paste_form;
 
@@ -33,10 +43,12 @@ function page_header($title, $options = []) {
 		}
 		if ($nav_menu) $nav_menu .= ' | ';
 		$id = 'nav-' . str_replace(' ', '-', $text);
+		$html = htmlspecialchars($text);
+		if ($text === 'new paste') $html = 'new<span class="wide"> paste';
 		$nav_menu .=
 			'<a href="' . htmlspecialchars($href) . '"'
 			. ' id="' . htmlspecialchars($id) . '">'
-			. htmlspecialchars($text)
+			. $html
 			. '</a>';
 	}
 
@@ -59,13 +71,13 @@ function page_header($title, $options = []) {
 		<?php run_hooks('favicon'); ?>
 	</head>
 <?php if ($paste_form) { ?>
-	<body>
+	<body class="<?php echo $body_class; ?>">
 		<form method="post" action="/send">
 			<div id="header">
 				<?php run_hooks('logo'); ?>
 				<a id="logotext" href="/"><?php echo run_hooks('logotext', 'chanbin'); ?></a>
-				<div id="controls">
-					<span id="meta"><?php echo $paste_status; ?></span>
+				<div id="new-paste-form">
+					<span class="description"><?php echo $paste_status; ?></span>
 					<input type="text" id="title" name="title" minlength="3" maxlength="36" placeholder="Title">
 					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
 					<input type="password" id="password" name="password" maxlength="99" placeholder="Password">
@@ -73,30 +85,31 @@ function page_header($title, $options = []) {
 					<input type="hidden" name="cloned_from" value="<?php echo $clone_paste_id ? htmlspecialchars($clone_paste_id) : '' ?>">
 					<input type="hidden" name="csrf" value="<?php echo htmlspecialchars(run_hooks('csrf_token')); ?>">
 				</div>
-				<div id="top-menu"><?php echo $nav_menu; ?></div>
+				<div id="top-menu" class="inline-menu"><?php echo $nav_menu; ?></div>
 			</div>
 			<div id="content">
 <?php } else { ?>
-	<body>
+	<body class="<?php echo $body_class; ?>">
 		<div id="header">
 			<?php run_hooks('logo'); ?>
 			<a id="logotext" href="/"><?php echo run_hooks('logotext', 'chanbin'); ?></a>
 			<?php if ($paste) {
-				echo '<div id="controls" class="paste-info">';
 				echo $paste->getTitleHTML();
-				echo '<span id="meta">';
+				echo '<span class="paste-info">';
 				echo $paste->getUserTripHTML();
 				echo $paste->getUIDHTML();
 				echo $paste->getDateHTML();
-				echo '</span>'; // #meta
-				echo '<span class="actions">';
+				echo '</span>'; // .paste-info
+				echo '<span class="paste-actions inline-menu">';
 				echo '<a href="/raw/' . htmlspecialchars($paste->id) . '">raw</a>';
 				echo ' | ';
-				echo '<a href="/download/' . htmlspecialchars($paste->id) . '">download</a>';
+				echo '<a href="/download/' . htmlspecialchars($paste->id) . '">';
+				echo '<span class="wide">download</span>';
+				echo '<span class="narrow">dl</span>';
+				echo '</a>';
 				echo ' | ';
 				echo '<a href="/clone/' . htmlspecialchars($paste->id) . '">clone</a>';
-				echo '</span>'; // .actions
-				echo '</div>'; // #controls
+				echo '</span>'; // .paste-actions
 			} ?>
 			<div id="top-menu"><?php echo $nav_menu; ?></div>
 		</div>

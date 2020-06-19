@@ -3,7 +3,7 @@ var elSend = null;
 var elTitle = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-	document.body.className = 'js';
+	document.body.className += ' js';
 
 	var elHeader = document.getElementById('header');
 	var elLogo = document.getElementById('logo');

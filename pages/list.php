@@ -20,7 +20,7 @@ if (!count($pastes)) {
 }
 
 $display_list_title = 'Recent pastes ' . $display_list_type;
-page_header($display_list_title);
+page_header($display_list_title, ['body_class' => 'list-pastes']);
 ?>
 <div id="page-text">
 	<h2><?php echo htmlspecialchars($display_list_title); ?></h2>

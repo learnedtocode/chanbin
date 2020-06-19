@@ -1,3 +1,5 @@
+/*** CSS RESET ***/
+
 /*
 http://meyerweb.com/eric/tools/css/reset/
 v2.0 | 20110126
@@ -47,7 +49,8 @@ table {
   border-spacing: 0;
 }
 
-/* end reset */
+
+/*** Main styles ***/
 
 * {
 	box-sizing: border-box;
@@ -58,21 +61,16 @@ body {
 	font-family: arial, helvetica, sans-serif;
 	font-size: 13px;
 }
+strong {
+  font-weight: bold;
+}
 a {
   color: #30a;
   text-decoration: none;
 }
-#logotext {
-  color: #000;
-}
-a:hover, a:focus,
-#logotext:hover, #logotext:focus {
-  color: #30f;
-  text-decoration: underline;
-}
-strong {
-  font-weight: bold;
-}
+
+
+/*** Header styles ***/
 
 #header {
 	position: fixed;
@@ -85,8 +83,89 @@ strong {
 	background: #d6daf0;
 	border-bottom: 3px solid #b7c5d9;
 	display: flex;
-	z-index: 6;
 }
+#header > * {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#header > #logo,
+#header > #logotext,
+#header > .paste-actions,
+#header > #top-menu {
+  flex-shrink: 0;
+}
+#header > .paste-title {
+  margin-left: 0.6em;
+  flex-shrink: 6;
+  min-width: 30px;
+}
+#header > .paste-info {
+  margin-left: 0.6em;
+  flex-shrink: 1;
+  min-width: 60px;
+}
+#header > .paste-actions {
+  margin-left: 0.6em;
+}
+
+#header > .paste-info .count {
+  margin-left: 0.15em;
+}
+#header > #top-menu {
+  flex-grow: 1;
+  text-align: right;
+  padding-left: 0.6em;
+}
+
+@media (min-width: 768px) {
+  body.new-paste #top-menu .narrow {
+	display: none;
+  }
+}
+@media (max-width: 767px) {
+  body.new-paste #top-menu .wide {
+	display: none;
+  }
+}
+
+@media (min-width: 960px) {
+  body.view-paste .paste-info .date .narrow,
+  body.view-paste .paste-actions .narrow,
+  body.view-paste #top-menu .narrow {
+	display: none;
+  }
+}
+@media (max-width: 959px) {
+  body.view-paste .paste-info .date .wide,
+  body.view-paste .paste-actions .wide,
+  body.view-paste #top-menu .wide {
+	display: none;
+  }
+}
+@media (min-width: 768px) {
+  body.view-paste .paste-info .trip .narrow {
+	display: none;
+  }
+}
+@media (max-width: 767px) {
+  body.view-paste .paste-info .trip .wide {
+	display: none;
+  }
+}
+
+
+/*** Logo and logo text ***/
+
+#logotext {
+  color: #000;
+}
+a:hover, a:focus,
+#logotext:hover, #logotext:focus {
+  color: #30f;
+  text-decoration: underline;
+}
+
 #logo {
 	width: 33px;
 	height: 33px;
@@ -112,65 +191,69 @@ body.js #logo:hover ellipse,
   text-decoration: underline;
 }
 
-#controls {
-  padding-left: 1.5em;
-  padding-right: 0.3em;
-  flex-shrink: 1;
-  white-space: nowrap;
-  overflow: hidden;
+
+/*** New paste form ***/
+
+#new-paste-form {
+  margin-left: 0.6em;
 }
-#controls #meta {
+#new-paste-form .description {
   color: #234;
   font-size: 12px;
 }
-#controls input {
+#new-paste-form input {
   font-size: 13px;
 }
-#controls input[type=text],
-#controls input[type=password] {
+#new-paste-form input[type=text],
+#new-paste-form input[type=password] {
   border: 1px solid #b7c5d9;
 }
-#controls #title {
+#new-paste-form #title {
   width: 78px;
 }
-#controls #username {
+#new-paste-form #username {
   width: 75px;
   background: #dfd;
 }
-#controls #password {
+#new-paste-form #password {
   width: 72px;
   background: #fdd;
 }
-#controls #send {
-  padding: 0 0.6em;
+#new-paste-form #send {
+  padding: 0 0.3em;
 }
-@media (min-width: 768px) {
-  #controls #title {
+@media (max-width: 600px) {
+  #new-paste-form #title {
+	width: 36px;
+  }
+  #new-paste-form #username {
+	width: 36px;
+  }
+  #new-paste-form #password {
+	width: 36px;
+  }
+}
+@media (min-width: 690px) {
+  #new-paste-form #title {
 	width: 108px;
   }
-  #controls #username {
+  #new-paste-form #username {
 	width: 102px;
 	background: #dfd;
   }
-  #controls #password {
+  #new-paste-form #password {
 	width: 96px;
 	background: #fdd;
   }
+  #new-paste-form #send {
+	padding: 0 0.6em;
+  }
 }
 
-#controls .title {
-  margin-right: 0.6em;
-}
-#controls .count {
-  margin-left: 0.15em;
-}
-#controls .date,
-#controls .uid-link,
-#controls .actions {
-  margin-left: 0.3em;
-}
 
-.paste-info .title {
+/*** Paste info (for viewing and listing pastes) ***/
+
+.paste-title {
   font-weight: bold;
 }
 .paste-info .anon {
@@ -190,15 +273,7 @@ body.js #logo:hover ellipse,
   color: #000;
 }
 
-#top-menu {
-  flex: 1;
-  text-align: right;
-  padding-left: 0.9em;
-  padding-right: 0.6em;
-  min-width: 36px;
-  white-space: nowrap;
-  overflow: hidden;
-}
+/*** Page content ***/
 
 #content {
   margin-top: 42px; /* .header height incl border */
@@ -218,12 +293,13 @@ body.js #logo:hover ellipse,
 .error, .warning {
   color: #900;
 }
-#page-text .paste-list {
-  font-size: 13px;
-  line-height: 22px;
-}
+
+
+/*** Paste List ***/
 
 .paste-list {
+  font-size: 13px;
+  line-height: 22px;
   border-top: 1px solid rgba(214, 218, 240, 0.6);
   border-bottom: 1px solid rgba(214, 218, 240, 0.6);
 }
@@ -259,6 +335,36 @@ body.js #logo:hover ellipse,
 .paste-list a {
   padding: 0.3em 0;
 }
+
+@media (max-width: 959px) {
+  body.list-pastes .paste-list .cell-title {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 240px;
+  }
+}
+
+@media (min-width: 768px) {
+  body.list-pastes .paste-list .narrow {
+	display: none;
+  }
+}
+@media (max-width: 767px) {
+  body.list-pastes .paste-list .wide {
+	display: none;
+  }
+  body.list-pastes .paste-list .cell-title {
+	max-width: 180px;
+  }
+}
+@media (max-width: 639px) {
+  body.list-pastes .paste-list .cell-title {
+	max-width: 120px;
+  }
+}
+
+/*** Paste Textarea ***/
 
 #paste {
 	margin: 0;
