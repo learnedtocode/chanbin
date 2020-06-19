@@ -62,11 +62,16 @@ document.addEventListener('DOMContentLoaded', function() {
 			setTimeout(function() {
 				elSend.disabled = true;
 				elSend.value = 'SAVING…';
-			}, 30);
+			}, 0);
 			setTimeout(function() {
 				elSend.disabled = false;
 				elSend.value = 'SAVE';
 			}, 6000);
+			// for Back button
+			window.onbeforeunload = function() {
+				elSend.disabled = false;
+				elSend.value = 'SAVE';
+			};
 		});
 
 		var saved = lget('login');
