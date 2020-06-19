@@ -221,4 +221,21 @@ class Paste {
 			. '</span>',
 		]);
 	}
+
+	public function getInfoText($sep = "\n") {
+		$items = ['title: ' . $this->title];
+		if ($this->username) {
+			$items[] = 'user: ' . $this->username;
+		} else if (!$this->trip) {
+			$items[] = '(anonymous)';
+		}
+		if ($this->trip) {
+			$items[] = 'trip: !!!' . $this->trip . ' (' . $this->trip_count . ')';
+		}
+		$items[] = 'uid: ' . $this->uid . ' (' . $this->uid_count . ')';
+		$date = new DateTime('@' . $this->timestamp);
+		$date->setTimeZone(new DateTimeZone('America/New_York'));
+		$items[] = 'date: ' . $date->format('n/d/y g:i:s a T');
+		return implode($items, $sep);
+	}
 }

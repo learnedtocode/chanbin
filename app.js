@@ -84,6 +84,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			followCursor();
 		}
 	}
+
+	var elShowPasteInfo = document.getElementById('show-paste-info');
+	if (elShowPasteInfo) {
+		elShowPasteInfo.addEventListener('click', function(e) {
+			e.preventDefault();
+			alert(
+				'Paste info:\n\n'
+				+ JSON.parse(elShowPasteInfo.getAttribute('data-info'))
+			);
+		});
+	}
 });
 
 function savePaste() {

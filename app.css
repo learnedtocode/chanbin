@@ -91,6 +91,7 @@ a {
 }
 #header > #logo,
 #header > #logotext,
+#header > .paste-info,
 #header > .paste-actions,
 #header > #top-menu {
   flex-shrink: 0;
@@ -102,10 +103,13 @@ a {
 }
 #header > .paste-info {
   margin-left: 0.6em;
-  flex-shrink: 0; /* overridden below */
 }
 #header > .paste-actions {
   margin-left: 0.6em;
+  padding-right: 0.3em;
+}
+#header > .paste-actions .phone-info {
+  display: none;
 }
 
 #header > .paste-info .count {
@@ -150,11 +154,6 @@ a {
 @media (max-width: 767px) {
   body.view-paste .paste-info .trip .wide {
 	display: none;
-  }
-  body.view-paste #header > .paste-info {
-	margin-left: 0.6em;
-	flex-shrink: 1;
-	min-width: 60px;
   }
 }
 
@@ -201,6 +200,9 @@ body.js #logo:hover ellipse,
 #new-paste-form {
   margin-left: 0.6em;
 }
+#new-paste-form #new-paste-form-inputs {
+  display: inline;
+}
 #new-paste-form .description {
   color: #234;
   font-size: 12px;
@@ -225,17 +227,6 @@ body.js #logo:hover ellipse,
 }
 #new-paste-form #send {
   padding: 0 0.3em;
-}
-@media (max-width: 600px) {
-  #new-paste-form #title {
-	width: 36px;
-  }
-  #new-paste-form #username {
-	width: 36px;
-  }
-  #new-paste-form #password {
-	width: 36px;
-  }
 }
 @media (min-width: 690px) {
   #new-paste-form #title {
@@ -340,21 +331,25 @@ body.js #logo:hover ellipse,
   padding: 0.3em 0;
 }
 
+body.list-pastes .paste-list .cell-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 420px;
+}
+
 @media (max-width: 959px) {
   body.list-pastes .paste-list .cell-title {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 	max-width: 240px;
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 800px) {
   body.list-pastes .paste-list .narrow {
 	display: none;
   }
 }
-@media (max-width: 767px) {
+@media (max-width: 799px) {
   body.list-pastes .paste-list .wide {
 	display: none;
   }
@@ -397,4 +392,129 @@ body.js #logo:hover ellipse,
 textarea[readonly] {
 	opacity: 0.75;
 	background: rgba(214, 218, 240, 0.6);
+}
+
+
+/*** Responsive design for very small screens ***/
+
+@media (max-width: 639px) {
+  body.view-paste #header,
+  body.new-paste #header {
+	display: block;
+	height: 72px;
+	line-height: 24px;
+  }
+  body.new-paste #header > #logo,
+  body.view-paste #header > #logo {
+	position: absolute;
+	left: 3px;
+	top: 3px;
+	width: 24px;
+	height: 24px;
+  }
+  body.new-paste #header > #logotext,
+  body.view-paste #header > #logotext {
+	position: absolute;
+	left: 27px;
+	top: 4.5px;
+	height: 24px;
+	line-height: 24px;
+	max-width: 54px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+  }
+  body.view-paste #header > .paste-title,
+  body.new-paste #header > #new-paste-form .description {
+	position: absolute;
+	left: 81px;
+	right: 6px;
+	top: 4.5px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+  }
+  body.view-paste #header > .paste-info,
+  body.new-paste #header #new-paste-form-inputs {
+	position: absolute;
+	left: 6px;
+	top: 25.5px;
+	margin-left: 0;
+  }
+  body.view-paste #header > .paste-actions {
+	position: absolute;
+	left: 6px;
+	top: 45px;
+	margin-left: 0;
+  }
+  body.view-paste #header > .paste-actions .phone-info {
+	display: inline;
+  }
+  body.view-paste #header > #top-menu,
+  body.new-paste #header > #top-menu {
+	position: absolute;
+	top: 45px;
+	right: 6px;
+	padding-right: 0.15em;
+  }
+  body.view-paste #content,
+  body.new-paste #content {
+	margin-top: 72px; /* .header height incl border */
+  }
+  body.view-paste #paste,
+  body.new-paste #paste {
+	top: 72px; /* .header height incl border */
+	height: calc(100% - 72px); /* .header height incl border */
+  }
+
+  body.new-paste #top-menu .wide {
+	display: inline;
+  }
+  body.new-paste #top-menu .narrow {
+	display: none;
+  }
+  body.new-paste #header #new-paste-form-inputs {
+	display: flex;
+	right: 6px;
+	top: 27px;
+  }
+  body.new-paste #header #new-paste-form-inputs input[type=text],
+  body.new-paste #header #new-paste-form-inputs input[type=password] {
+	flex-grow: 1;
+	margin-right: 0.3em;
+  }
+}
+@media (max-width: 639px) {
+  body.view-paste .paste-info .trip .wide,
+  body.view-paste .paste-info .date .wide,
+  body.view-paste .paste-actions .wide,
+  body.view-paste #top-menu .wide {
+	display: inline;
+  }
+  body.view-paste .paste-info .trip .narrow,
+  body.view-paste .paste-info .date .narrow,
+  body.view-paste .paste-actions .narrow,
+  body.view-paste #top-menu .narrow {
+	display: none;
+  }
+}
+@media (max-width: 540px) {
+  body.view-paste .paste-info .trip .wide,
+  body.view-paste .paste-info .date .wide {
+	display: none;
+  }
+  body.view-paste .paste-info .trip .narrow,
+  body.view-paste .paste-info .date .narrow {
+	display: inline;
+  }
+}
+@media (max-width: 420px) {
+  body.view-paste .paste-actions .wide,
+  body.view-paste #top-menu .wide {
+	display: none;
+  }
+  body.view-paste .paste-actions .narrow,
+  body.view-paste #top-menu .narrow {
+	display: inline;
+  }
 }

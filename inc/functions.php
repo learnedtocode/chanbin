@@ -78,12 +78,14 @@ function page_header($title, $options = []) {
 				<a id="logotext" href="/"><?php echo run_hooks('logotext', 'chanbin'); ?></a>
 				<div id="new-paste-form">
 					<span class="description"><?php echo $paste_status; ?></span>
-					<input type="text" id="title" name="title" minlength="3" maxlength="60" placeholder="Title">
-					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
-					<input type="password" id="password" name="password" maxlength="99" placeholder="Password">
-					<input type="submit" id="send" value="SAVE">
-					<input type="hidden" name="cloned_from" value="<?php echo $clone_paste_id ? htmlspecialchars($clone_paste_id) : '' ?>">
-					<input type="hidden" name="csrf" value="<?php echo htmlspecialchars(run_hooks('csrf_token')); ?>">
+					<div id="new-paste-form-inputs">
+						<input type="text" id="title" name="title" minlength="3" maxlength="60" placeholder="Title">
+						<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
+						<input type="password" id="password" name="password" maxlength="99" placeholder="Password">
+						<input type="submit" id="send" value="SAVE">
+						<input type="hidden" name="cloned_from" value="<?php echo $clone_paste_id ? htmlspecialchars($clone_paste_id) : '' ?>">
+						<input type="hidden" name="csrf" value="<?php echo htmlspecialchars(run_hooks('csrf_token')); ?>">
+					</div>
 				</div>
 				<div id="top-menu" class="inline-menu"><?php echo $nav_menu; ?></div>
 			</div>
@@ -101,6 +103,13 @@ function page_header($title, $options = []) {
 				echo $paste->getDateHTML();
 				echo '</span>'; // .paste-info
 				echo '<span class="paste-actions inline-menu">';
+				echo '<span class="phone-info">';
+				echo
+					'<a href="#" id="show-paste-info" data-info="'
+					. htmlspecialchars(json_encode($paste->getInfoText()))
+					. '">'
+					. 'info</a> | ';
+				echo '</span>'; // .phone-info
 				echo '<a href="/raw/' . htmlspecialchars($paste->id) . '">raw</a>';
 				echo ' | ';
 				echo '<a href="/download/' . htmlspecialchars($paste->id) . '">';
