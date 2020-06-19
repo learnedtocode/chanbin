@@ -7,10 +7,12 @@ if (
 	fail(400, 'Page expired', true);
 }
 
+$username = strtok(clean_ascii($_POST['username'] ?? ''), '#');
+$password = $_POST['password'] ?? '';
 $paste = [
 	'title' => clean_ascii($_POST['title'] ?? ''),
-	'username' => strtok(clean_ascii($_POST['username'] ?? ''), '#'),
-	'trip' => run_hooks('password_to_trip', $_POST['password'] ?? null),
+	'username' => $username,
+	'trip' => run_hooks('password_to_trip', $password),
 	'content' => $_POST['paste'] ?? '',
 	'cloned_from' => $_POST['cloned_from'] ?? '',
 ];
@@ -69,6 +71,96 @@ if (!count($errors)) {
 		} else {
 			$errors[] = 'You are creating too many pastes, please wait a bit and try again';
 		}
+	}
+}
+
+function check_password($username, $password) {
+	global $db;
+
+	if (!$password) {
+		return true;
+	}
+	if (strlen($password) < 6) {
+		return 'Your password is too short. Please pick a strong, unique password.';
+	}
+	if (levenshtein($username, $password) < 6) {
+		return 'Your password is too similar to your username. Please pick a strong, unique password.';
+	}
+
+	$password_sha1 = sha1($password);
+	$password_sha1_first_5 = substr($password_sha1, 0, 5);
+	$hibp = null;
+
+	$q_hibp = $db->prepare("
+		select hashes, last_updated
+		from hibp_cache
+		where first_5 = ?
+	");
+	$q_hibp->bind_param('s', $password_sha1_first_5);
+	$q_hibp->execute();
+	$q_hibp = $q_hibp->get_result();
+	if ($q_hibp->num_rows) {
+		$hibp_test = $q_hibp->fetch_assoc();
+		if ($hibp_test['last_updated'] >= time() - 7*24*3600) {
+			$hibp = $hibp_test;
+		}
+	}
+
+	if (!$hibp) { // fetch
+		$url = 'https://api.pwnedpasswords.com/range/' . $password_sha1_first_5;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 3000);
+		$response = curl_exec($ch);
+		curl_close($ch);
+		if (!$response) {
+			error_log('HIBP request FAILED: ' . $url);
+			fail(500, 'An internal error occurred', true);
+		}
+		$hibp = ['hashes' => trim($response)];
+		// save to db
+		$q_hibp = $db->prepare("
+			insert into hibp_cache (first_5, hashes, last_updated)
+			values (?, ?, unix_timestamp())
+			on duplicate key update first_5 = ?,
+				hashes = ?,
+				last_updated = unix_timestamp()
+		");
+		$q_hibp->bind_param(
+			'ssss',
+			$password_sha1_first_5,
+			$hibp['hashes'],
+			$password_sha1_first_5,
+			$hibp['hashes']
+		);
+		if (!$q_hibp->execute()) {
+			error_log('HIBP save FAILED: ' . $q_hibp->error);
+			fail(500, 'An internal error occurred', true);
+		}
+	}
+
+	$password_sha1_test = strtoupper(substr($password_sha1, 5));
+	foreach (explode("\n", $hibp['hashes']) as $line) {
+		if (strtok($line, ':') === $password_sha1_test) {
+			$breach_count = (int)strtok(':');
+			if ($breach_count > 1) {
+				error_log("HIBP password BREACHED: $password_sha1_first_5:$breach_count");
+				return "That password has been included in $breach_count <a href=\"https://haveibeenpwned.com/\" rel=\"noopener noreferrer\">public data breaches</a>, so it can't be used here. Please pick a strong, unique password.";
+			} else {
+				error_log("HIBP password WARNING: $password_sha1_first_5:$breach_count");
+			}
+		}
+	}
+
+	return true;
+}
+
+if ($password && !count($errors)) {
+	$password_check = check_password($username, $password);
+	if ($password_check !== true) {
+		$errors[] = $password_check;
 	}
 }
 

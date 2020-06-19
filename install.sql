@@ -26,3 +26,10 @@ create table limits (
 	mod_paste_id char(9) character set ascii default null,
 	primary key ip_hash (ip_hash)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+create table hibp_cache (
+	first_5 char(5) character set ascii not null,
+	hashes mediumtext character set ascii not null,
+	last_updated int(11) unsigned not null,
+	primary key first_5 (first_5)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
