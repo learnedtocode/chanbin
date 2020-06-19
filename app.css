@@ -97,13 +97,12 @@ a {
 }
 #header > .paste-title {
   margin-left: 0.6em;
-  flex-shrink: 6;
   min-width: 30px;
+  flex-shrink: 6;
 }
 #header > .paste-info {
   margin-left: 0.6em;
-  flex-shrink: 1;
-  min-width: 60px;
+  flex-shrink: 0; /* overridden below */
 }
 #header > .paste-actions {
   margin-left: 0.6em;
@@ -151,6 +150,11 @@ a {
 @media (max-width: 767px) {
   body.view-paste .paste-info .trip .wide {
 	display: none;
+  }
+  body.view-paste #header > .paste-info {
+	margin-left: 0.6em;
+	flex-shrink: 1;
+	min-width: 60px;
   }
 }
 
@@ -358,9 +362,14 @@ body.js #logo:hover ellipse,
 	max-width: 180px;
   }
 }
-@media (max-width: 639px) {
+@media (max-width: 659px) {
   body.list-pastes .paste-list .cell-title {
 	max-width: 120px;
+  }
+}
+@media (max-width: 599px) {
+  body.list-pastes .paste-list .cell-title {
+	max-width: 75px;
   }
 }
 
