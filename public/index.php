@@ -21,7 +21,7 @@ $db = @new mysqli(
 	$config['db']['database']
 );
 if ($db && !$db->connect_errno) {
-	$db->set_charset('utf8');
+	$db->set_charset('utf8mb4');
 } else {
 	error_log('MySQL connection failed: ' . $db->connect_error);
 	fail(500, 'A server error occurred');
