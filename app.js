@@ -95,8 +95,10 @@ function savePaste() {
 }
 
 function clearPaste() {
-	if (elTitle) elTitle.value = '';
-	if (elPaste) elPaste.value = '';
+	if (elSend) {
+		elTitle.value = '';
+		elPaste.value = '';
+	}
 	lremove('savedPaste');
 }
 
