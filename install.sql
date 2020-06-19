@@ -4,7 +4,7 @@ create table pastes (
 	trip varchar(12) character set ascii default null,
 	ip_hash char(12) character set ascii not null,
 	timestamp int(11) unsigned not null,
-	title varchar(36) character set ascii default null,
+	title varchar(60) character set ascii default null,
 	content text not null,
 	deleted tinyint(1) unsigned not null default 0,
 	is_mod_action tinyint(1) unsigned not null default 0,

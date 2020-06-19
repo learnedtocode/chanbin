@@ -78,7 +78,7 @@ function page_header($title, $options = []) {
 				<a id="logotext" href="/"><?php echo run_hooks('logotext', 'chanbin'); ?></a>
 				<div id="new-paste-form">
 					<span class="description"><?php echo $paste_status; ?></span>
-					<input type="text" id="title" name="title" minlength="3" maxlength="36" placeholder="Title">
+					<input type="text" id="title" name="title" minlength="3" maxlength="60" placeholder="Title">
 					<input type="text" id="username" name="username" maxlength="18" placeholder="Username">
 					<input type="password" id="password" name="password" maxlength="99" placeholder="Password">
 					<input type="submit" id="send" value="SAVE">
