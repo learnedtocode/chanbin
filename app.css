@@ -251,6 +251,14 @@ body.js #logo:hover ellipse,
 .paste-title {
   font-weight: bold;
 }
+.paste-title.is-mod-action {
+  color: #900;
+  text-decoration: underline;
+}
+a:hover .paste-title.is-mod-action,
+a:focus .paste-title.is-mod-action {
+  color: #30f;
+}
 .paste-info .anon {
   font-style: italic;
 }

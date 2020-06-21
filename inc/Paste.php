@@ -4,7 +4,7 @@ class Paste {
 	private static $counts_by_uid = [];
 	private static $counts_by_trip = [];
 
-	public static function load($paste_id, $paste_data = null) {
+	public static function load($paste_id, $paste_data = null, $need_counts = true) {
 		global $db;
 
 		if (!$paste_data) {
@@ -25,7 +25,7 @@ class Paste {
 			$paste_data = $q_paste->fetch_assoc();
 		}
 
-		if (!isset($paste_data['uid_count'])) {
+		if (!isset($paste_data['uid_count']) && $need_counts) {
 			if (!isset(self::$counts_by_uid[$paste_data['ip_hash']])) {
 				$q_count = $db->prepare("
 					select count(*) as uid_count
@@ -43,7 +43,7 @@ class Paste {
 			$paste_data['uid_count'] = self::$counts_by_uid[$paste_data['ip_hash']];
 		}
 
-		if (!empty($paste_data['trip']) && !isset($paste_data['trip_count'])) {
+		if (!empty($paste_data['trip']) && !isset($paste_data['trip_count']) && $need_counts) {
 			if (!isset(self::$counts_by_trip[$paste_data['trip']])) {
 				$q_count = $db->prepare("
 					select count(*) as trip_count
@@ -121,9 +121,15 @@ class Paste {
 	}
 
 	public function getTitleHTML() {
+		$class = 'paste-title';
+		$title_attr = $this->title;
+		if ($this->is_mod_action) {
+			$class .= ' is-mod-action';
+			$title_attr = 'moderator action';
+		}
 		return self::formatLines([
-			'<span class="paste-title"'
-			. ' title="' . htmlspecialchars($this->title) . '">'
+			'<span class="' . $class . '"'
+			. ' title="' . htmlspecialchars($title_attr) . '">'
 				. htmlspecialchars($this->title)
 			. '</span>',
 		]);
@@ -223,7 +229,12 @@ class Paste {
 	}
 
 	public function getInfoText($sep = "\n") {
-		$items = ['title: ' . $this->title];
+		$items = [];
+		if ($this->is_mod_action) {
+			$items[] = 'title (mod): ' . $this->title;
+		} else {
+			$items[] = 'title: ' . $this->title;
+		}
 		if ($this->username) {
 			$items[] = 'user: ' . $this->username;
 		} else if (!$this->trip) {
@@ -237,5 +248,114 @@ class Paste {
 		$date->setTimeZone(new DateTimeZone('America/New_York'));
 		$items[] = 'date: ' . $date->format('n/d/y g:i:s a T');
 		return implode($items, $sep);
+	}
+
+	private static function parseModeratorPasteID($line) {
+		if (preg_match('@^(https?://[^/]+/paste/)?([a-zA-Z0-9]{9})$@', $line, $matches)) {
+			return $matches[2];
+		} else {
+			return null;
+		}
+	}
+
+	private function parseModeratorActionContent() {
+		$len = mb_strlen($this->content);
+		if ($len < 27 || $len > 1200) {
+			return false;
+		}
+		$lines = array_map('trim', explode("\n", trim($this->content), 31));
+		if (count($lines) < 3 || count($lines) > 30) {
+			return false;
+		}
+
+		if (preg_match('@^((ban|wipe|delete)\s*(\+|,)\s*)+$@', $lines[0] . ',')) {
+			$actions_raw = preg_replace('@\s*[,+]\s*@', ',', $lines[0]);
+			$actions_raw = explode(',', $actions_raw);
+			$actions = ['ban' => false, 'wipe' => false, 'delete' => false];
+			foreach ($actions_raw as $action) {
+				$actions[$action] = true;
+			}
+		} else {
+			return false;
+		}
+
+		if (preg_match('@^reason\s*:(.{3,})$@', $lines[count($lines) - 1], $matches)) {
+			$reason = trim($matches[1]);
+			if (strlen($reason) < 3) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+
+		$paste_ids = [];
+		for ($i = 1; $i < count($lines) - 1; $i++) {
+			$paste_id = self::parseModeratorPasteID($lines[$i]);
+			if ($paste_id) {
+				$paste_ids[] = $paste_id;
+			} else {
+				return false;
+			}
+		}
+		if (!count($paste_ids)) { // not necessary?
+			return false;
+		}
+		$paste_ids = array_unique($paste_ids);
+
+		return compact('actions', 'paste_ids', 'reason');
+	}
+
+	public function parseModeratorAction() {
+		$valid_title = ($this->title === '!mod');
+		$valid_content = $this->parseModeratorActionContent();
+		$valid_user = run_hooks('paste_is_user_moderator', false, $this);
+
+		if ($valid_title && $valid_content && $valid_user) {
+			// Don't do any DB queries until now
+			// also this should query all data at once?
+			$data = $valid_content;
+			$data['pastes'] = [];
+			foreach ($data['paste_ids'] as $paste_id) {
+				$paste = self::load($paste_id);
+				if ($paste) {
+					$data['pastes'][$paste_id] = $paste;
+				}
+			}
+			if (!count($data['pastes'])) {
+				throw new ErrorException('Invalid moderator paste content: No valid paste IDs found');
+			}
+			return $data;
+
+		} else if ($valid_title || $valid_content) {
+			if ($valid_title && !$valid_user) {
+				throw new ErrorException('Only moderators can use that paste title.');
+			} else if ($valid_content && !$valid_user) {
+				throw new ErrorException('Only moderators can use that paste content.');
+			} else if ($valid_title) {
+				// add more specific message?
+				throw new ErrorException('Invalid moderator paste content.');
+			} else if ($valid_content) {
+				throw new ErrorException('Moderator paste title must be exactly "!mod" without quotes.');
+			}
+
+		} else {
+			return false;
+		}
+	}
+
+	public static function annotateModeratorActionContent($content, $mod_data) {
+		$lines = array_map('trim', explode("\n", trim($content), 31));
+		for ($i = 1; $i < count($lines) - 1; $i++) {
+			$paste_id = self::parseModeratorPasteID($lines[$i]);
+			if (!$paste_id || !isset($mod_data['pastes'][$paste_id])) {
+				// Deleted or invalid paste ID?
+				continue;
+			}
+			$lines[$i] .=
+				' ['
+				. $mod_data['pastes'][$paste_id]->getInfoText(', ')
+				. ']';
+		}
+		return implode("\n", $lines);
 	}
 }

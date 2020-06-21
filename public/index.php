@@ -6,6 +6,7 @@ require dirname(__DIR__) . '/inc/functions.php';
 
 ini_set('error_log', dirname(__DIR__) . '/errors.log');
 ini_set('display_errors', false);
+mb_internal_encoding('UTF-8');
 
 foreach (glob(dirname(__DIR__) . '/plugins/*.php') as $plugin) {
 	require $plugin;

@@ -9,26 +9,28 @@ if (
 
 $username = strtok(clean_ascii($_POST['username'] ?? ''), '#');
 $password = $_POST['password'] ?? '';
-$paste = [
+$paste_data = [
 	'title' => clean_ascii($_POST['title'] ?? ''),
 	'username' => $username,
 	'trip' => run_hooks('password_to_trip', $password),
+	'ip_hash' => $ip_hash_full,
 	'content' => $_POST['paste'] ?? '',
 	'cloned_from' => $_POST['cloned_from'] ?? '',
 ];
 
 $errors = [];
+$errors_try_again = true;
 
-if (strlen($paste['title']) < 3) $errors[] = 'Title is too short';
-if (strlen($paste['title']) > 60) $errors[] = 'Title is too long';
-if (strlen($paste['username']) > 18) $errors[] = 'Username is too long';
-if (strlen($paste['content']) < 3) $errors[] = 'Paste content is too short';
-if (strlen($paste['content']) > 90000) $errors[] = 'Paste content is too long';
+if (strlen($paste_data['title']) < 3) $errors[] = 'Title is too short';
+if (strlen($paste_data['title']) > 60) $errors[] = 'Title is too long';
+if (strlen($paste_data['username']) > 18) $errors[] = 'Username is too long';
+if (strlen($paste_data['content']) < 3) $errors[] = 'Paste content is too short';
+if (strlen($paste_data['content']) > 90000) $errors[] = 'Paste content is too long';
 // https://stackoverflow.com/questions/6723562
-if (!preg_match('@@u', $paste['content'])) $errors[] = 'Paste content is invalid';
+if (!preg_match('@@u', $paste_data['content'])) $errors[] = 'Paste content is invalid';
 
-if (!count($errors) && $paste['cloned_from']) {
-	if (!preg_match('@^[a-zA-Z0-9]{9}$@', $paste['cloned_from'])) {
+if (!count($errors) && $paste_data['cloned_from']) {
+	if (!preg_match('@^[a-zA-Z0-9]{9}$@', $paste_data['cloned_from'])) {
 		$errors[] = 'Invalid clone ID';
 	} else {
 		$q_clone = $db->prepare("
@@ -37,7 +39,7 @@ if (!count($errors) && $paste['cloned_from']) {
 			where id = ?
 			and deleted = 0
 		");
-		$q_clone->bind_param('s', $paste['cloned_from']);
+		$q_clone->bind_param('s', $paste_data['cloned_from']);
 		$q_clone->execute();
 		$q_clone = $q_clone->get_result();
 		if (!$q_clone->num_rows) {
@@ -46,7 +48,7 @@ if (!count($errors) && $paste['cloned_from']) {
 	}
 }
 
-$errors = run_hooks('new_paste_errors_1', $errors, $paste);
+$errors = run_hooks('new_paste_errors_1', $errors, $paste_data);
 
 if (!count($errors)) {
 	$q_limit = $db->prepare("
@@ -55,7 +57,7 @@ if (!count($errors)) {
 		where ip_hash = ?
 		and (blocked_until >= unix_timestamp() or blocked_until = 0)
 	");
-	$q_limit->bind_param('s', $ip_hash_full);
+	$q_limit->bind_param('s', $paste_data['ip_hash']);
 	$q_limit->execute();
 	$q_limit = $q_limit->get_result();
 	if ($q_limit->num_rows) {
@@ -68,6 +70,7 @@ if (!count($errors)) {
 				'<strong class="error">You are banned</strong>',
 				'Reason: ' . htmlentities($limit['reason_text']),
 			];
+			$errors_try_again = false;
 		} else {
 			$errors[] = 'You are creating too many pastes, please wait a bit and try again';
 		}
@@ -164,23 +167,108 @@ if ($password && !count($errors)) {
 	}
 }
 
-$errors = run_hooks('new_paste_errors_2', $errors, $paste);
+$errors = run_hooks('new_paste_errors_2', $errors, $paste_data);
 
 if (count($errors)) {
 	fail(
-		400, 'Problems with your paste:', true,
-		"<ul>\n<li>" . implode('</li>\n<li>', $errors) . "</li>\n</ul>"
+		400, 'Problems with your paste:', $errors_try_again,
+		"<ul>\n<li>" . implode("</li>\n<li>", $errors) . "</li>\n</ul>"
 	);
 }
 
-$paste['id'] = run_hooks('new_paste_id');
-$paste['is_mod_action'] = 0;
-$paste['flags'] = 0;
-if (!$paste['username']) $paste['username'] = null;
-if (!$paste['trip']) $paste['trip'] = null;
-if (!$paste['cloned_from']) $paste['cloned_from'] = null;
+$paste_data['id'] = run_hooks('new_paste_id');
+$paste_data['is_mod_action'] = 0;
+$paste_data['flags'] = 0;
+if (!$paste_data['username']) $paste_data['username'] = null;
+if (!$paste_data['trip']) $paste_data['trip'] = null;
+if (!$paste_data['cloned_from']) $paste_data['cloned_from'] = null;
 
-$paste = run_hooks('paste_data', $paste);
+try {
+	$mod_data = Paste::load(null, $paste_data, false)->parseModeratorAction();
+} catch (Exception $e) {
+	fail(
+		400, 'Problems with your paste:', true,
+		'<p>' . htmlspecialchars($e->getMessage()) . '</p>'
+	);
+}
+if ($mod_data) {
+	$paste_data['is_mod_action'] = 1;
+	try {
+		$paste_data['content'] = Paste::annotateModeratorActionContent(
+			$paste_data['content'],
+			$mod_data
+		);
+	} catch (Exception $e) {
+		fail(
+			500, 'An internal error occurred:', true,
+			'<p>' . htmlspecialchars($e->getMessage()) . '</p>'
+		);
+	}
+	if ($mod_data['actions']['wipe']) {
+		$ip_hashes = array_unique(array_map(function($paste) {
+			// Sanitization shouldn't be necessary, but doesn't hurt
+			return preg_replace('@[^a-zA-Z0-9]@', '', $paste->ip_hash);
+		}, array_values($mod_data['pastes'])));
+		$ip_hashes_params = implode(',', array_fill(0, count($ip_hashes), '?'));
+		$q_wipe = $db->prepare("
+			update pastes
+			set deleted = 1
+			where ip_hash in ($ip_hashes_params)
+		");
+		$q_wipe->bind_param(str_repeat('s', count($ip_hashes)), ...$ip_hashes);
+		$q_wipe->execute();
+	} else if ($mod_data['actions']['delete']) {
+		$paste_ids = array_unique(array_map(function($paste_id) {
+			// Sanitization shouldn't be necessary, but doesn't hurt
+			return preg_replace('@[^a-zA-Z0-9]@', '', $paste_id);
+		}, $mod_data['paste_ids']));
+		$paste_ids_params = implode(',', array_fill(0, count($paste_ids), '?'));
+		$q_delete = $db->prepare("
+			update pastes
+			set deleted = 1
+			where id in ($paste_ids_params)
+		");
+		$q_delete->bind_param(str_repeat('s', count($paste_ids)), ...$paste_ids);
+		if (!$q_delete->execute()) {
+			fail(500, $q_delete->error, true);
+		}
+	}
+	if ($mod_data['actions']['ban']) {
+		$ip_hashes = array_unique(array_map(function($paste) {
+			// Sanitization shouldn't be necessary, but doesn't hurt
+			return preg_replace('@[^a-zA-Z0-9]@', '', $paste->ip_hash);
+		}, array_values($mod_data['pastes'])));
+		foreach ($ip_hashes as $ip_hash) {
+			$q_ban = $db->prepare("
+				insert into limits (
+					ip_hash, blocked_since, blocked_until,
+					reason_text, mod_paste_id
+				) values (
+					?, unix_timestamp(), 0, ?, ?
+				) on duplicate key update
+					ip_hash = ?,
+					blocked_since = unix_timestamp(),
+					blocked_until = 0,
+					reason_text = ?,
+					mod_paste_id = ?
+			");
+			$q_ban->bind_param(
+				'sss' . 'sss',
+				$ip_hash,
+				$mod_data['reason'],
+				$paste_data['id'],
+				$ip_hash,
+				$mod_data['reason'],
+				$paste_data['id']
+			);
+			if (!$q_ban->execute()) {
+				fail(500, $q_ban->error, true);
+			}
+		}
+	}
+}
+
+$paste_data = run_hooks('paste_data', $paste_data);
 
 $q_newpaste = $db->prepare("
 	insert into pastes (
@@ -195,18 +283,18 @@ $q_newpaste = $db->prepare("
 ");
 $q_newpaste->bind_param(
 	'ssss' . 'ss' . 'iis',
-	$paste['id'],
-	$paste['username'],
-	$paste['trip'],
-	$ip_hash_full,
-	$paste['title'],
-	$paste['content'],
-	$paste['is_mod_action'],
-	$paste['flags'],
-	$paste['cloned_from']
+	$paste_data['id'],
+	$paste_data['username'],
+	$paste_data['trip'],
+	$paste_data['ip_hash'],
+	$paste_data['title'],
+	$paste_data['content'],
+	$paste_data['is_mod_action'],
+	$paste_data['flags'],
+	$paste_data['cloned_from']
 );
 if (!$q_newpaste->execute()) {
 	fail(500, $q_newpaste->error, true);
 }
 
-redirect('/paste/' . $paste['id']);
+redirect('/paste/' . $paste_data['id']);
