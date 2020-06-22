@@ -154,6 +154,7 @@ function check_password($username, $password) {
 			} else {
 				error_log("HIBP password WARNING: $password_sha1_first_5:$breach_count");
 			}
+			break;
 		}
 	}
 
