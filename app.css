@@ -261,6 +261,7 @@ a:focus .paste-title.is-mod-action {
 }
 .paste-info .anon {
   font-style: italic;
+  color: #606060;
 }
 .paste-info .trip-link {
   color: #093;
@@ -304,11 +305,11 @@ a:focus .paste-title.is-mod-action {
 .paste-list {
   font-size: 13px;
   line-height: 22px;
-  border-top: 1px solid rgba(214, 218, 240, 0.6);
-  border-bottom: 1px solid rgba(214, 218, 240, 0.6);
+  border-top: 1px solid #e2e5f5;
+  border-bottom: 1px solid #e2e5f5;
 }
 .paste-list tr.header {
-  background: rgba(214, 218, 240, 0.6);
+  background: #f3f4fb;
 }
 .paste-list th {
   font-weight: bold;
@@ -317,24 +318,21 @@ a:focus .paste-title.is-mod-action {
 .paste-list td {
   text-align: left;
   padding: 0 0.3em;
-  border-left: 1px solid rgba(214, 218, 240, 0.6);
+  border-left: 1px solid #e2e5f5;
 }
 .paste-list td {
-  border-top: 1px solid rgba(214, 218, 240, 0.6);
-  color: rgba(0, 0, 0, 0.75);
+  border-top: 1px solid #e2e5f5;
+  color: #454545;
 }
 .paste-list .cell-index,
 .paste-list .cell-size {
   text-align: right;
 }
 .paste-list .cell-size {
-  border-right: 1px solid rgba(214, 218, 240, 0.6);
+  border-right: 1px solid #e2e5f5;
 }
 .paste-list .count {
   margin-left: 0.15em;
-}
-.paste-list .anon {
-  color: rgba(0, 0, 0, .54);
 }
 .paste-list a {
   padding: 0.3em 0;
@@ -399,8 +397,8 @@ body.list-pastes .paste-list .cell-title {
 	outline: none;
 }
 textarea[readonly] {
-	opacity: 0.75;
-	background: rgba(214, 218, 240, 0.6);
+	color: #454545;
+	background: #e6e9f6;
 }
 
 
