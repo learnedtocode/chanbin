@@ -231,7 +231,7 @@ body.js #logo:hover ellipse,
 #new-paste-form #toggle-pw {
   display: none;
 }
-@media (min-width: 690px) {
+@media (min-width: 720px) {
   #new-paste-form #title {
 	width: 108px;
   }
