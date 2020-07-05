@@ -108,10 +108,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			var elPass = document.getElementById('password');
 			if (elPass.type === 'password') {
 				elPass.type = 'text';
-				elTogglePw.text = 'hide pw';
+				elTogglePw.innerText = 'hide pw';
 			} else {
 				elPass.type = 'password';
-				elTogglePw.text = 'show pw';
+				elTogglePw.innerText = 'show pw';
 			}
 		});
 	}
