@@ -100,6 +100,21 @@ document.addEventListener('DOMContentLoaded', function() {
 			);
 		});
 	}
+
+	var elTogglePw = document.getElementById('toggle-pw');
+	if (elTogglePw) {
+		elTogglePw.addEventListener('click', function(e) {
+			e.preventDefault();
+			var elPass = document.getElementById('password');
+			if (elPass.type === 'password') {
+				elPass.type = 'text';
+				elTogglePw.text = 'hide pw';
+			} else {
+				elPass.type = 'password';
+				elTogglePw.text = 'show pw';
+			}
+		});
+	}
 });
 
 function savePaste() {

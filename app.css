@@ -228,6 +228,9 @@ body.js #logo:hover ellipse,
 #new-paste-form #send {
   padding: 0 0.3em;
 }
+#new-paste-form #toggle-pw {
+  display: none;
+}
 @media (min-width: 690px) {
   #new-paste-form #title {
 	width: 108px;
@@ -242,6 +245,12 @@ body.js #logo:hover ellipse,
   }
   #new-paste-form #send {
 	padding: 0 0.6em;
+  }
+}
+@media (min-width: 750px) {
+  body.js #new-paste-form #toggle-pw {
+	display: inline;
+	margin-right: 0.15em;
   }
 }
 
