@@ -135,7 +135,7 @@ function page_footer() {
 		</form>
 <?php } ?>
 	</body>
-</html><!-- <?php echo date('Y-m-d H:i:s'); ?> -->
+</html><!-- <?php echo gmdate('Y-m-d H:i:s'); ?> -->
 <?php
 }
 
