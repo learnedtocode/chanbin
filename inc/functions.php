@@ -1,8 +1,12 @@
 <?php
 
 $page_paste_form = false;
+$page_did_header = false;
 
 function page_header($title, $options = []) {
+	global $page_did_header;
+	$page_did_header = true;
+
 	$paste_form = $options['paste_form'] ?? false;
 	$clone_paste_id = $options['clone_paste_id'] ?? null;
 	$paste = $options['paste'] ?? null;
@@ -128,6 +132,11 @@ function page_header($title, $options = []) {
 }
 
 function page_footer() {
+	global $page_did_header;
+	if (!$page_did_header) {
+		return;
+	}
+
 	global $page_paste_form;
 ?>
 			</div>
