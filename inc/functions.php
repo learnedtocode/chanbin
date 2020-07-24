@@ -149,14 +149,7 @@ function page_footer() {
 }
 
 function fail($code, $message, $retry_text = false, $extra_html = null) {
-	switch ($code) {
-		case 400:
-			header('HTTP/1.1 400 Bad Request');
-			break;
-		case 500:
-			header('HTTP/1.1 500 Internal Server Error');
-			break;
-	}
+	set_http_status_code($code);
 	page_header($message);
 	echo '<div id="page-text">';
 	echo '<h2 class="error">' . htmlentities($message) . '</h2>';
@@ -173,17 +166,35 @@ function fail($code, $message, $retry_text = false, $extra_html = null) {
 }
 
 function redirect($location, $code = 302) {
-	switch ($code) {
-		case 302:
-			header('HTTP/1.1 302 Found');
-			break;
-	}
+	set_http_status_code($code);
 	header('Location: ' . $location);
 	echo '<div id="page-text">';
 	echo '<h2 class="error">You are being redirected</h2>';
 	echo '</div>';
 	page_footer();
 	run_hooks('req_end', $code, $location);
+	die();
+}
+
+function set_http_status_code($code) {
+	switch ($code) {
+		case 302:
+			header('HTTP/1.1 302 Found');
+			break;
+		case 400:
+			header('HTTP/1.1 400 Bad Request');
+			break;
+		case 500:
+			header('HTTP/1.1 500 Internal Server Error');
+			break;
+	}
+}
+
+function serve_json($obj, $xo = true) {
+	if ($xo) {
+		header('Access-Control-Allow-Origin: *');
+	}
+	echo json_encode($obj);
 	die();
 }
 

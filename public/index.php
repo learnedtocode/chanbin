@@ -85,6 +85,11 @@ if ($route === '/debug-' . $config['secrets']['debug']) {
 	header('Cache-Control: no-store');
 	require dirname(__DIR__) . '/pages/send.php';
 
+} else if (preg_match('@^/api/info/([a-zA-Z0-9]{9})$@', $route, $matches)) {
+	header('Cache-Control: no-store');
+    $route_params['paste_id'] = $matches[1];
+	require dirname(__DIR__) . '/pages/api-info.php';
+
 } else {
 	fail(404, 'Page not found');
 }
